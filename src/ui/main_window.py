@@ -1,0 +1,355 @@
+"""
+메인 윈도우
+Tkinter 기반 메인 애플리케이션 윈도우
+"""
+import tkinter as tk
+from tkinter import ttk, messagebox, filedialog
+from typing import Optional, Dict, Any
+from loguru import logger
+
+from src.config.settings import settings
+from src.config.constants import APP_NAME, APP_VERSION
+from src.core.engine import engine
+
+
+class MainWindow:
+    """메인 윈도우 클래스"""
+
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title(f"{APP_NAME} v{APP_VERSION}")
+
+        # 윈도우 크기 설정
+        self.root.geometry(f"{settings.ui.window_width}x{settings.ui.window_height}")
+        self.root.minsize(800, 600)
+
+        # 중앙 프레임 (메인 컨텐츠 영역)
+        self.main_container = None
+        self.sidebar = None
+        self.content_area = None
+        self.status_bar = None
+
+        # 메뉴 바
+        self._create_menu()
+
+        # UI 컴포넌트 초기화
+        self._initialize_ui()
+
+        logger.info("메인 윈도우 초기화 완료")
+
+    def _create_menu(self):
+        """메뉴 바 생성"""
+        menubar = tk.Menu(self.root)
+
+        # 파일 메뉴
+        file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu.add_command(label="New Code", command=self.new_code)
+        file_menu.add_command(label="Open", command=self.open_file)
+        file_menu.add_command(label="Save", command=self.save_file)
+        file_menu.add_separator()
+        file_menu.add_command(label="Export", command=self.export_data)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.quit_application)
+        menubar.add_cascade(label="File", menu=file_menu)
+
+        # 편집 메뉴
+        edit_menu = tk.Menu(menubar, tearoff=0)
+        edit_menu.add_command(label="Undo", command=self.undo)
+        edit_menu.add_command(label="Redo", command=self.redo)
+        edit_menu.add_separator()
+        edit_menu.add_command(label="Cut", command=self.cut)
+        edit_menu.add_command(label="Copy", command=self.copy)
+        edit_menu.add_command(label="Paste", command=self.paste)
+        menubar.add_cascade(label="Edit", menu=edit_menu)
+
+        # 보기 메뉴
+        view_menu = tk.Menu(menubar, tearoff=0)
+        view_menu.add_command(label="Toggle Sidebar", command=self.toggle_sidebar)
+        view_menu.add_separator()
+        view_menu.add_command(label="Settings", command=self.open_settings)
+        menubar.add_cascade(label="View", menu=view_menu)
+
+        # 학습 메뉴
+        learning_menu = tk.Menu(menubar, tearoff=0)
+        learning_menu.add_command(label="Start Learning", command=self.start_learning)
+        learning_menu.add_command(label="My Progress", command=self.show_progress)
+        learning_menu.add_command(label="Achievements", command=self.show_achievements)
+        menubar.add_cascade(label="Learning", menu=learning_menu)
+
+        # 도움말 메뉴
+        help_menu = tk.Menu(menubar, tearoff=0)
+        help_menu.add_command(label="Documentation", command=self.show_documentation)
+        help_menu.add_command(label="About", command=self.show_about)
+        menubar.add_cascade(label="Help", menu=help_menu)
+
+        self.root.config(menu=menubar)
+
+    def _initialize_ui(self):
+        """UI 컴포넌트 초기화"""
+        # 메인 컨테이너
+        self.main_container = tk.Frame(self.root)
+        self.main_container.pack(fill=tk.BOTH, expand=True)
+
+        # 사이드바
+        self._create_sidebar()
+
+        # 컨텐츠 영역
+        self._create_content_area()
+
+        # 상태 바
+        self._create_status_bar()
+
+    def _create_sidebar(self):
+        """사이드바 생성"""
+        self.sidebar = tk.Frame(self.main_container, width=200, bg="#f0f0f0")
+        self.sidebar.pack(side=tk.LEFT, fill=tk.Y)
+        self.sidebar.pack_propagate(False)
+
+        # 사이드바 내용
+        tk.Label(self.sidebar, text="Navigation", bg="#f0f0f0", font=("Arial", 12, "bold")).pack(pady=10)
+
+        # 네비게이션 버튼들
+        buttons = [
+            ("Code Analysis", lambda: self.show_tab("code_analysis")),
+            ("Learning", lambda: self.show_tab("learning")),
+            ("Chat", lambda: self.show_tab("chat")),
+            ("Progress", lambda: self.show_tab("progress"))
+        ]
+
+        for text, command in buttons:
+            btn = tk.Button(self.sidebar, text=text, command=command, width=15)
+            btn.pack(pady=5)
+
+    def _create_content_area(self):
+        """컨텐츠 영역 생성"""
+        self.content_area = tk.Frame(self.main_container)
+        self.content_area.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+        # 탭 노트북 생성
+        self.notebook = ttk.Notebook(self.content_area)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+
+        # 기본 탭들 생성
+        self._create_code_analysis_tab()
+        self._create_learning_tab()
+        self._create_chat_tab()
+
+    def _create_code_analysis_tab(self):
+        """코드 분석 탭 생성"""
+        tab = tk.Frame(self.notebook)
+        self.notebook.add(tab, text="Code Analysis")
+
+        # 상단 도구 모음
+        toolbar = tk.Frame(tab)
+        toolbar.pack(fill=tk.X, padx=5, pady=5)
+
+        tk.Button(toolbar, text="Run", command=self.run_code).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text="Analyze", command=self.analyze_code).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text="Debug", command=self.debug_code).pack(side=tk.LEFT, padx=2)
+
+        # 코드 에디터 영역
+        code_frame = tk.Frame(tab)
+        code_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        tk.Label(code_frame, text="Code Editor (Coming Soon)", font=("Arial", 14)).pack(expand=True)
+
+        # 분석 결과 영역
+        result_frame = tk.Frame(tab, height=200)
+        result_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        tk.Label(result_frame, text="Analysis Results (Coming Soon)", font=("Arial", 10)).pack(expand=True)
+
+    def _create_learning_tab(self):
+        """학습 탭 생성"""
+        tab = tk.Frame(self.notebook)
+        self.notebook.add(tab, text="Learning")
+
+        tk.Label(tab, text="Learning Content (Coming Soon)", font=("Arial", 14)).pack(expand=True)
+
+    def _create_chat_tab(self):
+        """채팅 탭 생성"""
+        tab = tk.Frame(self.notebook)
+        self.notebook.add(tab, text="Chat")
+
+        tk.Label(tab, text="AI Mentor Chat (Coming Soon)", font=("Arial", 14)).pack(expand=True)
+
+    def _create_status_bar(self):
+        """상태 바 생성"""
+        self.status_bar = tk.Frame(self.root, relief=tk.SUNKEN)
+        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # 상태 정보
+        self.status_label = tk.Label(self.status_bar, text="Ready", anchor=tk.W)
+        self.status_label.pack(side=tk.LEFT, padx=5)
+
+        self.progress_label = tk.Label(self.status_bar, text="Progress: 0%", anchor=tk.E)
+        self.progress_label.pack(side=tk.RIGHT, padx=5)
+
+    def update_status(self, message: str):
+        """상태 메시지 업데이트"""
+        self.status_label.config(text=message)
+
+    def update_progress(self, progress: int):
+        """진도 업데이트"""
+        self.progress_label.config(text=f"Progress: {progress}%")
+
+    def show_tab(self, tab_name: str):
+        """특정 탭 표시"""
+        # 나중에 구현
+        logger.info(f"탭 전환 요청: {tab_name}")
+
+    # 메뉴 커맨드 구현
+    def new_code(self):
+        """새 코드 생성"""
+        logger.info("새 코드 생성")
+        self.update_status("Creating new code...")
+
+    def open_file(self):
+        """파일 열기"""
+        filetypes = [("Python Files", "*.py"), ("All Files", "*.*")]
+        filename = filedialog.askopenfilename(filetypes=filetypes)
+
+        if filename:
+            logger.info(f"파일 열기: {filename}")
+            self.update_status(f"Opened: {filename}")
+
+    def save_file(self):
+        """파일 저장"""
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".py",
+            filetypes=[("Python Files", "*.py"), ("All Files", "*.*")]
+        )
+
+        if filename:
+            logger.info(f"파일 저장: {filename}")
+            self.update_status(f"Saved: {filename}")
+
+    def export_data(self):
+        """데이터 내보내기"""
+        logger.info("데이터 내보내기")
+        messagebox.showinfo("Export", "Export functionality coming soon!")
+
+    def undo(self):
+        """실행 취소"""
+        logger.info("실행 취소")
+
+    def redo(self):
+        """재실행"""
+        logger.info("재실행")
+
+    def cut(self):
+        """잘라내기"""
+        logger.info("잘라내기")
+
+    def copy(self):
+        """복사"""
+        logger.info("복사")
+
+    def paste(self):
+        """붙여넣기"""
+        logger.info("붙여넣기")
+
+    def toggle_sidebar(self):
+        """사이드바 토글"""
+        if self.sidebar.winfo_ismapped():
+            self.sidebar.pack_forget()
+        else:
+            self.sidebar.pack(side=tk.LEFT, fill=tk.Y)
+
+    def open_settings(self):
+        """설정 열기"""
+        logger.info("설정 열기")
+        messagebox.showinfo("Settings", "Settings dialog coming soon!")
+
+    def start_learning(self):
+        """학습 시작"""
+        logger.info("학습 시작")
+        self.update_status("Starting learning session...")
+
+    def show_progress(self):
+        """진도 표시"""
+        logger.info("진도 표시")
+        messagebox.showinfo("Progress", "Your learning progress: 45%")
+
+    def show_achievements(self):
+        """성취 표시"""
+        logger.info("성취 표시")
+        messagebox.showinfo("Achievements", "Achievements: 5 unlocked")
+
+    def show_documentation(self):
+        """문서 표시"""
+        logger.info("문서 표시")
+        messagebox.showinfo("Documentation", "Documentation coming soon!")
+
+    def show_about(self):
+        """정보 표시"""
+        about_text = f"""
+{APP_NAME} v{APP_VERSION}
+
+Python 학습을 위한 AI 기반 멘토링 플랫폼
+
+특징:
+• AI 기반 코드 분석
+• 실시간 멘토링
+• 진도 추적
+• 적응형 학습
+
+개발자: {APP_AUTHOR}
+        """
+        messagebox.showinfo("About", about_text)
+
+    def quit_application(self):
+        """애플리케이션 종료"""
+        if messagebox.askyesno("Exit", "정말 종료하시겠습니까?"):
+            self.quit()
+
+    def run_code(self):
+        """코드 실행"""
+        logger.info("코드 실행")
+        self.update_status("Running code...")
+
+    def analyze_code(self):
+        """코드 분석"""
+        logger.info("코드 분석")
+        self.update_status("Analyzing code...")
+
+    def debug_code(self):
+        """코드 디버그"""
+        logger.info("코드 디버그")
+        self.update_status("Debugging code...")
+
+    def run(self):
+        """메인 루프 시작"""
+        try:
+            logger.info("애플리케이션 시작")
+            self.root.mainloop()
+        except Exception as e:
+            logger.error(f"애플리케이션 실행 중 오류: {e}")
+            raise
+
+    def quit(self):
+        """애플리케이션 종료"""
+        try:
+            logger.info("애플리케이션 종료 시작")
+
+            # 엔진 종료
+            if hasattr(engine, 'shutdown'):
+                engine.shutdown()
+
+            # 윈도우 종료
+            self.root.quit()
+            self.root.destroy()
+
+            logger.info("애플리케이션 종료 완료")
+
+        except Exception as e:
+            logger.error(f"애플리케이션 종료 중 오류: {e}")
+
+
+if __name__ == "__main__":
+    # 메인 윈도우 테스트
+    try:
+        window = MainWindow()
+        window.run()
+    except Exception as e:
+        logger.error(f"메인 윈도우 실행 실패: {e}")
