@@ -10,6 +10,7 @@ from loguru import logger
 from src.config.settings import settings
 from src.config.constants import APP_NAME, APP_VERSION
 from src.core.engine import engine
+from src.ui.components.code_editor import CodeEditor
 
 
 class MainWindow:
@@ -139,25 +140,25 @@ class MainWindow:
         tab = tk.Frame(self.notebook)
         self.notebook.add(tab, text="Code Analysis")
 
-        # 상단 도구 모음
-        toolbar = tk.Frame(tab)
-        toolbar.pack(fill=tk.X, padx=5, pady=5)
+        # 실제 코드 에디터 생성
+        self.code_editor = CodeEditor(
+            tab,
+            on_run=self.run_code,
+            on_analyze=self.analyze_code
+        )
+        self.code_editor.pack(fill=tk.BOTH, expand=True)
 
-        tk.Button(toolbar, text="Run", command=self.run_code).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="Analyze", command=self.analyze_code).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="Debug", command=self.debug_code).pack(side=tk.LEFT, padx=2)
+        # 샘플 코드 로드
+        sample_code = '''def hello_world():
+    """Hello World 함수"""
+    name = "World"
+    print(f"Hello, {name}!")
+    return name
 
-        # 코드 에디터 영역
-        code_frame = tk.Frame(tab)
-        code_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-
-        tk.Label(code_frame, text="Code Editor (Coming Soon)", font=("Arial", 14)).pack(expand=True)
-
-        # 분석 결과 영역
-        result_frame = tk.Frame(tab, height=200)
-        result_frame.pack(fill=tk.X, padx=5, pady=5)
-
-        tk.Label(result_frame, text="Analysis Results (Coming Soon)", font=("Arial", 10)).pack(expand=True)
+if __name__ == "__main__":
+    hello_world()
+'''
+        self.code_editor.set_code(sample_code)
 
     def _create_learning_tab(self):
         """학습 탭 생성"""
@@ -303,15 +304,102 @@ Python 학습을 위한 AI 기반 멘토링 플랫폼
         if messagebox.askyesno("Exit", "정말 종료하시겠습니까?"):
             self.quit()
 
-    def run_code(self):
+    def run_code(self, code: Optional[str] = None):
         """코드 실행"""
-        logger.info("코드 실행")
-        self.update_status("Running code...")
+        try:
+            if code is None:
+                code = self.code_editor.get_code()
 
-    def analyze_code(self):
+            if not code.strip():
+                messagebox.showwarning("코드 실행", "실행할 코드가 없습니다.")
+                return
+
+            logger.info("코드 실행")
+            self.update_status("Running code...")
+
+            # 간단한 코드 실행
+            import io
+            import sys
+
+            # 출력 캡처
+            old_stdout = sys.stdout
+            sys.stdout = captured_output = io.StringIO()
+
+            try:
+                # 코드 실행
+                exec(code, {"__name__": "__main__"})
+            finally:
+                # 출력 복원
+                sys.stdout = old_stdout
+
+            # 실행 결과 표시
+            output = captured_output.getvalue()
+
+            if output:
+                messagebox.showinfo("실행 결과", f"✅ 실행 성공!\n\n📄 출력:\n{output}")
+                self.update_status(f"Code executed successfully! Output: {len(output)} chars")
+            else:
+                messagebox.showinfo("실행 결과", "✅ 코드가 성공적으로 실행되었습니다.\n(출력 없음)")
+                self.update_status("Code executed successfully!")
+
+            logger.info("코드 실행 성공")
+
+        except Exception as e:
+            error_msg = f"❌ 코드 실행 중 오류가 발생했습니다:\n\n{str(e)}"
+            messagebox.showerror("실행 오류", error_msg)
+            self.update_status(f"Execution error: {str(e)}")
+            logger.error(f"코드 실행 실패: {e}")
+
+    def analyze_code(self, code: Optional[str] = None):
         """코드 분석"""
-        logger.info("코드 분석")
-        self.update_status("Analyzing code...")
+        try:
+            if code is None:
+                code = self.code_editor.get_code()
+
+            if not code.strip():
+                messagebox.showwarning("코드 분석", "분석할 코드가 없습니다.")
+                return
+
+            logger.info("코드 분석")
+            self.update_status("Analyzing code...")
+
+            # 기본 분석 결과
+            analysis = {
+                "lines": len(code.split('\n')),
+                "characters": len(code),
+                "functions": code.count('def '),
+                "classes": code.count('class '),
+                "comments": code.count('#')
+            }
+
+            # 간단한 문법 체크
+            try:
+                import ast
+                ast.parse(code)
+                analysis["syntax"] = "✅ 문법 정상"
+            except SyntaxError as e:
+                analysis["syntax"] = f"❌ 문법 오류: {e.msg} (라인 {e.lineno})"
+
+            # 결과 메시지 생성
+            result_msg = f"""📊 코드 분석 결과
+
+📏 길이: {analysis['lines']} 라인 ({analysis['characters']} 문자)
+🔧 함수: {analysis['functions']}개
+🏗️  클래스: {analysis['classes']}개
+💬 주석: {analysis['comments']}개
+📝 문법: {analysis['syntax']}
+
+💡 팁: 더 상세한 분석을 위해 Claude API를 설정하세요!"""
+
+            messagebox.showinfo("코드 분석 완료", result_msg)
+            self.update_status("Analysis complete!")
+            logger.info("코드 분석 완료")
+
+        except Exception as e:
+            error_msg = f"코드 분석 중 오류가 발생했습니다:\n\n{str(e)}"
+            messagebox.showerror("분석 오류", error_msg)
+            self.update_status(f"Analysis error: {str(e)}")
+            logger.error(f"코드 분석 실패: {e}")
 
     def debug_code(self):
         """코드 디버그"""
