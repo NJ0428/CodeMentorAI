@@ -11,6 +11,7 @@ from src.config.constants import Level, MessageType
 from src.database.db_manager import DatabaseManager
 from src.core.session_manager import SessionManager
 from src.database.models import UserModel
+from src.learning.learning_manager import get_learning_manager
 
 
 class CodeMentorEngine:
@@ -19,6 +20,7 @@ class CodeMentorEngine:
     def __init__(self):
         self.database_manager: Optional[DatabaseManager] = None
         self.session_manager: Optional[SessionManager] = None
+        self.learning_manager = None
         self.is_running = False
         self.current_user = None
 
@@ -33,6 +35,13 @@ class CodeMentorEngine:
 
             logger.info("세션 관리자 초기화")
             self.session_manager = SessionManager(self.database_manager)
+
+            # 학습 시스템 초기화
+            logger.info("학습 시스템 초기화")
+            self.learning_manager = get_learning_manager(
+                self.database_manager,
+                self.session_manager
+            )
 
             self.is_running = True
             logger.info("✅ CodeMentorAI 엔진 초기화 완료")
@@ -60,11 +69,16 @@ class CodeMentorEngine:
             if self.database_manager:
                 db_info = self.database_manager.get_database_info()
 
+            learning_status = {}
+            if self.learning_manager:
+                learning_status = self.learning_manager.get_system_status()
+
             return {
                 "is_running": self.is_running,
                 "current_user": self.current_user,
                 "database": db_info,
-                "session": self.session_manager.get_session_info() if self.session_manager else {}
+                "session": self.session_manager.get_session_info() if self.session_manager else {},
+                "learning_system": learning_status
             }
 
         except Exception as e:
@@ -106,6 +120,10 @@ class CodeMentorEngine:
     def get_current_user(self):
         """현재 사용자 반환"""
         return self.current_user
+
+    def get_learning_manager(self):
+        """학습 관리자 반환"""
+        return self.learning_manager
 
 
 # 전역 엔진 인스턴스

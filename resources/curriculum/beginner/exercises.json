@@ -1,0 +1,118 @@
+{
+  "exercises": [
+    {
+      "id": "ex_basics_001",
+      "title": "변수와 출력",
+      "description": "변수를 생성하고 print 함수로 출력해보세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "basics",
+      "starter_code": "# 이름 변수를 만들고 출력하세요\nname = \"___\"\nprint(name)",
+      "solution": "name = \"홍길동\"\nprint(name)",
+      "hints": [
+        "따옴표 안에 이름을 입력하세요",
+        "변수명은 자유롭게 지을 수 있습니다"
+      ],
+      "time_estimate": 15,
+      "xp_reward": 10,
+      "prerequisites": [],
+      "learning_objectives": ["변수 생성", "print 함수 사용"],
+      "test_cases": []
+    },
+    {
+      "id": "ex_basics_002",
+      "title": "문자열 연결",
+      "description": "두 문자열을 연결하여 인사말을 만드세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "basics",
+      "starter_code": "greeting = \"Hello, \"\nname = \"World\"\n# greeting과 name을 연결하세요\nresult = ___ \nprint(result)",
+      "solution": "greeting = \"Hello, \"\nname = \"World\"\nresult = greeting + name\nprint(result)",
+      "hints": [
+        "+ 연산자를 사용하여 문자열을 연결할 수 있습니다",
+        "greeting + name 형식을 사용하세요"
+      ],
+      "time_estimate": 20,
+      "xp_reward": 15,
+      "prerequisites": ["ex_basics_001"],
+      "learning_objectives": ["문자열 연결", "연산자 사용"],
+      "test_cases": []
+    },
+    {
+      "id": "ex_control_001",
+      "title": "if 조건문",
+      "description": "숫자가 짝수인지 확인하는 코드를 완성하세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "control_flow",
+      "starter_code": "num = 4\nif num % 2 == ___:\n    print(\"짝수입니다\")\nelse:\n    print(\"홀수입니다\")",
+      "solution": "num = 4\nif num % 2 == 0:\n    print(\"짝수입니다\")\nelse:\n    print(\"홀수입니다\")",
+      "hints": [
+        "나머지 연산자 %의 결과가 0이면 짝수입니다",
+        "빈칸에 0을 입력하세요"
+      ],
+      "time_estimate": 20,
+      "xp_reward": 15,
+      "prerequisites": [],
+      "learning_objectives": ["if 조건문", "나머지 연산자"],
+      "test_cases": []
+    },
+    {
+      "id": "ex_control_002",
+      "title": "for 반복문",
+      "description": "for 반복문을 사용하여 1부터 5까지의 합계를 구하세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "control_flow",
+      "starter_code": "total = 0\nfor i in range(1, ___):\n    total += i\nprint(f\"1부터 5까지의 합: {total}\")",
+      "solution": "total = 0\nfor i in range(1, 6):\n    total += i\nprint(f\"1부터 5까지의 합: {total}\")",
+      "hints": [
+        "range(1, 6)은 1부터 5까지의 숫자를 생성합니다",
+        "range의 두 번째 인자는 포함되지 않습니다"
+      ],
+      "time_estimate": 25,
+      "xp_reward": 20,
+      "prerequisites": ["ex_control_001"],
+      "learning_objectives": ["for 반복문", "range 함수"],
+      "test_cases": []
+    },
+    {
+      "id": "ex_data_001",
+      "title": "리스트 기초",
+      "description": "리스트를 생성하고 요소에 접근해보세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "data_structures",
+      "starter_code": "# 과일 리스트를 만드세요\nfruits = [\"사과\", \"___\", \"바나나\"]\nprint(f\"두 번째 과일: {fruits[1]}\")",
+      "solution": "fruits = [\"사과\", \"오렌지\", \"바나나\"]\nprint(f\"두 번째 과일: {fruits[1]}\")",
+      "hints": [
+        "리스트는 대괄호 []로 만듭니다",
+        "요소들은 쉼표로 구분합니다"
+      ],
+      "time_estimate": 15,
+      "xp_reward": 10,
+      "prerequisites": [],
+      "learning_objectives": ["리스트 생성", "인덱싱"],
+      "test_cases": []
+    },
+    {
+      "id": "ex_func_001",
+      "title": "함수 정의",
+      "description": "두 수를 더하는 함수를 만드세요.",
+      "exercise_type": "code_completion",
+      "difficulty": "beginner",
+      "topic": "functions",
+      "starter_code": "def add_numbers(a, b):\n    ___ a + b\n\nresult = add_numbers(3, 5)\nprint(f\"결과: {result}\")",
+      "solution": "def add_numbers(a, b):\n    return a + b\n\nresult = add_numbers(3, 5)\nprint(f\"결과: {result}\")",
+      "hints": [
+        "함수의 결과를 반환하려면 return을 사용하세요",
+        "return 키워드를 사용하세요"
+      ],
+      "time_estimate": 25,
+      "xp_reward": 20,
+      "prerequisites": [],
+      "learning_objectives": ["함수 정의", "return 문", "매개변수"],
+      "test_cases": []
+    }
+  ]
+}

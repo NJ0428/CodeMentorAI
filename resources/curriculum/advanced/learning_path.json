@@ -1,0 +1,10 @@
+{
+  "id": "advanced_python",
+  "name": "Python 고급 과정",
+  "level": "advanced",
+  "description": "Python의 고급 개념을 배웁니다. 클래스, 상속, 데코레이터 등을 학습합니다.",
+  "topics": [],
+  "total_xp": 0,
+  "estimated_duration": 20,
+  "tags": ["고급", "OOP", "데코레이터"]
+}
