@@ -1,0 +1,52 @@
+{
+  "topics": [
+    {
+      "id": "oop_basics",
+      "title": "객체 지향 프로그래밍 기초",
+      "description": "클래스와 객체를 만들고 사용하는 방법을 학습합니다.",
+      "level": "advanced",
+      "order": 1,
+      "exercises": [],
+      "learning_objectives": [
+        "클래스 정의하기",
+        "객체 생성하기",
+        "속성과 메서드 이해하기"
+      ],
+      "estimated_duration": 150,
+      "tags": ["OOP", "클래스", "객체"],
+      "completed": false
+    },
+    {
+      "id": "inheritance",
+      "title": "상속과 다형성",
+      "description": "클래스 상속과 다형성을 학습합니다.",
+      "level": "advanced",
+      "order": 2,
+      "exercises": [],
+      "learning_objectives": [
+        "상속 구현하기",
+        "메서드 오버라이딩",
+        "다형성 이해하기"
+      ],
+      "estimated_duration": 180,
+      "tags": ["상속", "다형성", "오버라이딩"],
+      "completed": false
+    },
+    {
+      "id": "decorators",
+      "title": "데코레이터",
+      "description": "Python 데코레이터를 만들고 사용하는 방법을 학습합니다.",
+      "level": "advanced",
+      "order": 3,
+      "exercises": [],
+      "learning_objectives": [
+        "데코레이터 기초 이해하기",
+        "데코레이터 만들기",
+        "실용적 데코레이터 활용하기"
+      ],
+      "estimated_duration": 120,
+      "tags": ["데코레이터", "고급 기법"],
+      "completed": false
+    }
+  ]
+}
