@@ -1,0 +1,10 @@
+{
+  "id": "beginner_python",
+  "name": "Python 초급 과정",
+  "level": "beginner",
+  "description": "Python 프로그래밍의 기초를 배웁니다. 변수, 데이터 타입, 제어 흐름 등 기본 개념을 학습합니다.",
+  "topics": [],
+  "total_xp": 0,
+  "estimated_duration": 10,
+  "tags": ["기초", "입문", "초급"]
+}

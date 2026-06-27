@@ -1,0 +1,72 @@
+{
+  "topics": [
+    {
+      "id": "basics",
+      "title": "Python 기초",
+      "description": "Python의 기본 문법과 개념을 학습합니다. 변수, 데이터 타입, 기본 연산자, 입출력 등을 다룹니다.",
+      "level": "beginner",
+      "order": 1,
+      "exercises": [],
+      "learning_objectives": [
+        "변수와 데이터 타입 이해하기",
+        "기본 연산자 사용법 익히기",
+        "입력과 출력 함수 활용하기",
+        "주석 작성법 배우기"
+      ],
+      "estimated_duration": 90,
+      "tags": ["기초", "변수", "데이터 타입"],
+      "completed": false
+    },
+    {
+      "id": "control_flow",
+      "title": "제어 흐름",
+      "description": "조건문과 반복문을 통해 프로그램의 흐름을 제어하는 방법을 학습합니다.",
+      "level": "beginner",
+      "order": 2,
+      "exercises": [],
+      "learning_objectives": [
+        "if/elif/else 조건문 이해하기",
+        "for 반복문 사용하기",
+        "while 반복문 활용하기",
+        "break와 continue 제어문 배우기"
+      ],
+      "estimated_duration": 120,
+      "tags": ["조건문", "반복문", "제어 흐름"],
+      "completed": false
+    },
+    {
+      "id": "data_structures",
+      "title": "기본 데이터 구조",
+      "description": "리스트, 튜플, 딕셔너리 등 Python의 기본 데이터 구조를 학습합니다.",
+      "level": "beginner",
+      "order": 3,
+      "exercises": [],
+      "learning_objectives": [
+        "리스트 생성 및 조작하기",
+        "튜플과 리스트의 차이 이해하기",
+        "딕셔너리 활용하기",
+        "세트(Set) 사용법 배우기"
+      ],
+      "estimated_duration": 150,
+      "tags": ["리스트", "딕셔너리", "데이터 구조"],
+      "completed": false
+    },
+    {
+      "id": "functions",
+      "title": "함수 기초",
+      "description": "함수를 정의하고 사용하는 방법을 학습합니다. 코드 재사용과 모듈화의 기초를 다룹니다.",
+      "level": "beginner",
+      "order": 4,
+      "exercises": [],
+      "learning_objectives": [
+        "함수 정의와 호출하기",
+        "매개변수와 반환값 이해하기",
+        "기본값 매개변수 사용하기",
+        "람다 함수 기초 배우기"
+      ],
+      "estimated_duration": 120,
+      "tags": ["함수", "모듈화", "재사용"],
+      "completed": false
+    }
+  ]
+}
