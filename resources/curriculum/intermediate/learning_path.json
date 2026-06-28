@@ -1,0 +1,10 @@
+{
+  "id": "intermediate_python",
+  "name": "Python 중급 과정",
+  "level": "intermediate",
+  "description": "Python의 중급 개념을 배웁니다. 함수 고급 기법, 예외 처리, 파일 처리 등을 학습합니다.",
+  "topics": [],
+  "total_xp": 0,
+  "estimated_duration": 15,
+  "tags": ["중급", "함수", "파일 처리"]
+}
