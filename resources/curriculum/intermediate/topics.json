@@ -1,0 +1,52 @@
+{
+  "topics": [
+    {
+      "id": "advanced_functions",
+      "title": "고급 함수 기법",
+      "description": "람다 함수, 맵핑, 필터링 등 고급 함수 기법을 학습합니다.",
+      "level": "intermediate",
+      "order": 1,
+      "exercises": [],
+      "learning_objectives": [
+        "람다 함수 이해하기",
+        "map과 filter 사용하기",
+        "리스트 comprehension 활용하기"
+      ],
+      "estimated_duration": 120,
+      "tags": ["람다", "map", "filter"],
+      "completed": false
+    },
+    {
+      "id": "exception_handling",
+      "title": "예외 처리",
+      "description": "try-except를 사용하여 예외를 처리하는 방법을 학습합니다.",
+      "level": "intermediate",
+      "order": 2,
+      "exercises": [],
+      "learning_objectives": [
+        "try-except 문 이해하기",
+        "여러 예외 처리하기",
+        "사용자 정의 예외 만들기"
+      ],
+      "estimated_duration": 90,
+      "tags": ["예외 처리", "try-except"],
+      "completed": false
+    },
+    {
+      "id": "file_handling",
+      "title": "파일 처리",
+      "description": "파일을 읽고 쓰는 방법을 학습합니다.",
+      "level": "intermediate",
+      "order": 3,
+      "exercises": [],
+      "learning_objectives": [
+        "파일 열고 닫기",
+        "텍스트 파일 읽기/쓰기",
+        "with 문 사용하기"
+      ],
+      "estimated_duration": 100,
+      "tags": ["파일", "IO"],
+      "completed": false
+    }
+  ]
+}
