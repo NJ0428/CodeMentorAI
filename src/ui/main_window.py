@@ -11,6 +11,7 @@ from src.config.settings import settings
 from src.config.constants import APP_NAME, APP_VERSION
 from src.core.engine import engine
 from src.ui.components.code_editor import CodeEditor
+from src.ui.components.learning_tab import LearningTab
 
 
 class MainWindow:
@@ -162,10 +163,14 @@ if __name__ == "__main__":
 
     def _create_learning_tab(self):
         """학습 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="Learning")
+        # 학습 컨트롤러 가져오기
+        learning_controller = None
+        if hasattr(engine, 'get_learning_manager') and engine.get_learning_manager():
+            learning_controller = engine.get_learning_manager()
 
-        tk.Label(tab, text="Learning Content (Coming Soon)", font=("Arial", 14)).pack(expand=True)
+        # LearningTab 생성
+        self.learning_tab = LearningTab(self.notebook, learning_controller)
+        self.notebook.add(self.learning_tab, text="📚 Learning")
 
     def _create_chat_tab(self):
         """채팅 탭 생성"""
