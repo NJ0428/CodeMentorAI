@@ -12,6 +12,7 @@ from src.config.constants import APP_NAME, APP_VERSION
 from src.core.engine import engine
 from src.ui.components.code_editor import CodeEditor
 from src.ui.components.learning_tab import LearningTab
+from src.ui.components.enhanced_chat_tab import EnhancedChatTab
 
 
 class MainWindow:
@@ -174,10 +175,18 @@ if __name__ == "__main__":
 
     def _create_chat_tab(self):
         """채팅 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="Chat")
+        # 코드 컨텍스트 공유 콜백 함수
+        def share_code_context():
+            if hasattr(self, 'code_editor'):
+                return self.code_editor.get_code()
+            return None
 
-        tk.Label(tab, text="AI Mentor Chat (Coming Soon)", font=("Arial", 14)).pack(expand=True)
+        # 향상된 채팅 탭 생성
+        self.chat_tab = EnhancedChatTab(
+            self.notebook,
+            on_code_share=share_code_context
+        )
+        self.notebook.add(self.chat_tab, text="💬 Chat")
 
     def _create_status_bar(self):
         """상태 바 생성"""
