@@ -13,6 +13,7 @@ from src.core.engine import engine
 from src.ui.components.code_editor import CodeEditor
 from src.ui.components.learning_tab import LearningTab
 from src.ui.components.enhanced_chat_tab import EnhancedChatTab
+from src.ui.components.dashboard_tab import DashboardTab
 
 
 class MainWindow:
@@ -116,6 +117,7 @@ class MainWindow:
             ("Code Analysis", lambda: self.show_tab("code_analysis")),
             ("Learning", lambda: self.show_tab("learning")),
             ("Chat", lambda: self.show_tab("chat")),
+            ("Dashboard", lambda: self.show_tab("dashboard")),
             ("Progress", lambda: self.show_tab("progress"))
         ]
 
@@ -136,6 +138,7 @@ class MainWindow:
         self._create_code_analysis_tab()
         self._create_learning_tab()
         self._create_chat_tab()
+        self._create_dashboard_tab()
 
     def _create_code_analysis_tab(self):
         """코드 분석 탭 생성"""
@@ -187,6 +190,17 @@ if __name__ == "__main__":
             on_code_share=share_code_context
         )
         self.notebook.add(self.chat_tab, text="💬 Chat")
+
+    def _create_dashboard_tab(self):
+        """시각화 대시보드 탭 생성"""
+        # 학습 컨트롤러 가져오기
+        learning_controller = None
+        if hasattr(engine, 'get_learning_manager') and engine.get_learning_manager():
+            learning_controller = engine.get_learning_manager()
+
+        # DashboardTab 생성
+        self.dashboard_tab = DashboardTab(self.notebook, learning_controller)
+        self.notebook.add(self.dashboard_tab, text="📊 Dashboard")
 
     def _create_status_bar(self):
         """상태 바 생성"""
