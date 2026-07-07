@@ -14,6 +14,7 @@ from src.ui.components.code_editor import CodeEditor
 from src.ui.components.learning_tab import LearningTab
 from src.ui.components.enhanced_chat_tab import EnhancedChatTab
 from src.ui.components.dashboard_tab import DashboardTab
+from src.ui.components.resources_tab import ResourcesTab
 
 
 class MainWindow:
@@ -118,6 +119,7 @@ class MainWindow:
             ("Learning", lambda: self.show_tab("learning")),
             ("Chat", lambda: self.show_tab("chat")),
             ("Dashboard", lambda: self.show_tab("dashboard")),
+            ("Resources", lambda: self.show_tab("resources")),
             ("Progress", lambda: self.show_tab("progress"))
         ]
 
@@ -139,6 +141,7 @@ class MainWindow:
         self._create_learning_tab()
         self._create_chat_tab()
         self._create_dashboard_tab()
+        self._create_resources_tab()
 
     def _create_code_analysis_tab(self):
         """코드 분석 탭 생성"""
@@ -201,6 +204,17 @@ if __name__ == "__main__":
         # DashboardTab 생성
         self.dashboard_tab = DashboardTab(self.notebook, learning_controller)
         self.notebook.add(self.dashboard_tab, text="📊 Dashboard")
+
+    def _create_resources_tab(self):
+        """리소스 및 학습 자료 탭 생성"""
+        # 학습 컨트롤러 가져오기
+        learning_controller = None
+        if hasattr(engine, 'get_learning_manager') and engine.get_learning_manager():
+            learning_controller = engine.get_learning_manager()
+
+        # ResourcesTab 생성
+        self.resources_tab = ResourcesTab(self.notebook, learning_controller)
+        self.notebook.add(self.resources_tab, text="📚 Resources")
 
     def _create_status_bar(self):
         """상태 바 생성"""
