@@ -18,7 +18,7 @@ class ProblemCategory(str, Enum):
     """문제 카테고리"""
     ALGORITHM = "algorithm"  # 알고리즘
     DATA_STRUCTURE = "data_structure"  # 자료구조
-    STRING Manipulation = "string_manipulation"  # 문자열 처리
+    STRING_MANIPULATION = "string_manipulation"  # 문자열 처리
     MATHEMATICS = "mathematics"  # 수학
     FUNCTIONAL = "functional"  # 함수 작성
     CLASS_DESIGN = "class_design"  # 클래스 설계
