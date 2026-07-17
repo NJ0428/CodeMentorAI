@@ -15,6 +15,7 @@ from src.ui.components.learning_tab import LearningTab
 from src.ui.components.enhanced_chat_tab import EnhancedChatTab
 from src.ui.components.dashboard_tab import DashboardTab
 from src.ui.components.resources_tab import ResourcesTab
+from src.ui.styles.style_manager import get_style_manager
 
 
 class MainWindow:
@@ -22,11 +23,16 @@ class MainWindow:
 
     def __init__(self):
         self.root = tk.Tk()
+        
+        self.style_manager = get_style_manager(self.root)
+        
         self.root.title(f"{APP_NAME} v{APP_VERSION}")
 
         # 윈도우 크기 설정
         self.root.geometry(f"{settings.ui.window_width}x{settings.ui.window_height}")
         self.root.minsize(800, 600)
+        
+        self.style_manager.set_theme(settings.ui.theme)
 
         # 중앙 프레임 (메인 컨텐츠 영역)
         self.main_container = None
@@ -71,6 +77,14 @@ class MainWindow:
         view_menu = tk.Menu(menubar, tearoff=0)
         view_menu.add_command(label="Toggle Sidebar", command=self.toggle_sidebar)
         view_menu.add_separator()
+
+        theme_menu = tk.Menu(menubar, tearoff=0)
+        self.theme_var = tk.StringVar(value=settings.ui.theme)
+        theme_menu.add_radiobutton(label="Light", variable=self.theme_var, value="light", command=lambda: self.change_theme("light"))
+        theme_menu.add_radiobutton(label="Dark", variable=self.theme_var, value="dark", command=lambda: self.change_theme("dark"))
+        
+        view_menu.add_cascade(label="Theme", menu=theme_menu)
+        view_menu.add_separator()
         view_menu.add_command(label="Settings", command=self.open_settings)
         menubar.add_cascade(label="View", menu=view_menu)
 
@@ -89,10 +103,20 @@ class MainWindow:
 
         self.root.config(menu=menubar)
 
+    def change_theme(self, theme_name):
+        """테마 변경"""
+        if settings.ui.theme != theme_name:
+            settings.ui.theme = theme_name
+            # In a real application, you might save this to a config file
+            messagebox.showinfo("Theme Change", "The theme will be applied after restarting the application.")
+
     def _initialize_ui(self):
         """UI 컴포넌트 초기화"""
+        colors = self.style_manager.get_current_theme_colors()
+        self.root.configure(bg=colors["bg"])
+        
         # 메인 컨테이너
-        self.main_container = tk.Frame(self.root)
+        self.main_container = tk.Frame(self.root, bg=colors["bg"])
         self.main_container.pack(fill=tk.BOTH, expand=True)
 
         # 사이드바
@@ -106,12 +130,13 @@ class MainWindow:
 
     def _create_sidebar(self):
         """사이드바 생성"""
-        self.sidebar = tk.Frame(self.main_container, width=200, bg="#f0f0f0")
+        colors = self.style_manager.get_current_theme_colors()
+        self.sidebar = tk.Frame(self.main_container, width=200, bg=colors["bg_alt"])
         self.sidebar.pack(side=tk.LEFT, fill=tk.Y)
         self.sidebar.pack_propagate(False)
 
         # 사이드바 내용
-        tk.Label(self.sidebar, text="Navigation", bg="#f0f0f0", font=("Arial", 12, "bold")).pack(pady=10)
+        tk.Label(self.sidebar, text="Navigation", bg=colors["bg_alt"], fg=colors["fg_alt"], font=("Arial", 12, "bold")).pack(pady=10)
 
         # 네비게이션 버튼들
         buttons = [
@@ -124,12 +149,14 @@ class MainWindow:
         ]
 
         for text, command in buttons:
-            btn = tk.Button(self.sidebar, text=text, command=command, width=15)
+            btn = tk.Button(self.sidebar, text=text, command=command, width=15, 
+                           bg=colors["primary"], fg=colors["bg"], relief=tk.FLAT)
             btn.pack(pady=5)
 
     def _create_content_area(self):
         """컨텐츠 영역 생성"""
-        self.content_area = tk.Frame(self.main_container)
+        colors = self.style_manager.get_current_theme_colors()
+        self.content_area = tk.Frame(self.main_container, bg=colors["bg"])
         self.content_area.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # 탭 노트북 생성
@@ -145,12 +172,14 @@ class MainWindow:
 
     def _create_code_analysis_tab(self):
         """코드 분석 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="Code Analysis")
 
         # 실제 코드 에디터 생성
         self.code_editor = CodeEditor(
             tab,
+            self.style_manager,
             on_run=self.run_code,
             on_analyze=self.analyze_code
         )
@@ -218,14 +247,15 @@ if __name__ == "__main__":
 
     def _create_status_bar(self):
         """상태 바 생성"""
-        self.status_bar = tk.Frame(self.root, relief=tk.SUNKEN)
+        colors = self.style_manager.get_current_theme_colors()
+        self.status_bar = tk.Frame(self.root, relief=tk.SUNKEN, bg=colors["bg_alt"])
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
         # 상태 정보
-        self.status_label = tk.Label(self.status_bar, text="Ready", anchor=tk.W)
+        self.status_label = tk.Label(self.status_bar, text="Ready", anchor=tk.W, bg=colors["bg_alt"], fg=colors["fg_alt"])
         self.status_label.pack(side=tk.LEFT, padx=5)
 
-        self.progress_label = tk.Label(self.status_bar, text="Progress: 0%", anchor=tk.E)
+        self.progress_label = tk.Label(self.status_bar, text="Progress: 0%", anchor=tk.E, bg=colors["bg_alt"], fg=colors["fg_alt"])
         self.progress_label.pack(side=tk.RIGHT, padx=5)
 
     def update_status(self, message: str):
