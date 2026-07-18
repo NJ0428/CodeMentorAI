@@ -1,0 +1,1648 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-07-17 22:57+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/ui/main_window.py:52
+msgid "메인 윈도우 초기화 완료"
+msgstr ""
+
+#: src/ui/main_window.py:60
+msgid "New Code"
+msgstr ""
+
+#: src/ui/main_window.py:61
+msgid "Open"
+msgstr ""
+
+#: src/ui/main_window.py:62
+msgid "Save"
+msgstr ""
+
+#: src/ui/main_window.py:64 src/ui/main_window.py:321
+msgid "Export"
+msgstr ""
+
+#: src/ui/main_window.py:66 src/ui/main_window.py:394
+msgid "Exit"
+msgstr ""
+
+#: src/ui/main_window.py:67
+msgid "File"
+msgstr ""
+
+#: src/ui/main_window.py:71
+msgid "Undo"
+msgstr ""
+
+#: src/ui/main_window.py:72
+msgid "Redo"
+msgstr ""
+
+#: src/ui/main_window.py:74
+msgid "Cut"
+msgstr ""
+
+#: src/ui/main_window.py:75
+msgid "Copy"
+msgstr ""
+
+#: src/ui/main_window.py:76
+msgid "Paste"
+msgstr ""
+
+#: src/ui/main_window.py:77
+msgid "Edit"
+msgstr ""
+
+#: src/ui/main_window.py:81
+msgid "Toggle Sidebar"
+msgstr ""
+
+#: src/ui/main_window.py:86
+msgid "Light"
+msgstr ""
+
+#: src/ui/main_window.py:87
+msgid "Dark"
+msgstr ""
+
+#: src/ui/main_window.py:89
+msgid "Theme"
+msgstr ""
+
+#: src/ui/main_window.py:94
+msgid "English"
+msgstr ""
+
+#: src/ui/main_window.py:95
+msgid "Korean"
+msgstr ""
+
+#: src/ui/main_window.py:96
+msgid "Language"
+msgstr ""
+
+#: src/ui/main_window.py:99 src/ui/main_window.py:353
+msgid "Settings"
+msgstr ""
+
+#: src/ui/main_window.py:100
+msgid "View"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:212 src/ui/main_window.py:104
+msgid "Start Learning"
+msgstr ""
+
+#: src/ui/main_window.py:105
+msgid "My Progress"
+msgstr ""
+
+#: src/ui/main_window.py:106 src/ui/main_window.py:368
+msgid "Achievements"
+msgstr ""
+
+#: src/ui/main_window.py:107 src/ui/main_window.py:161
+msgid "Learning"
+msgstr ""
+
+#: src/ui/main_window.py:111 src/ui/main_window.py:373
+msgid "Documentation"
+msgstr ""
+
+#: src/ui/main_window.py:112 src/ui/main_window.py:390
+msgid "About"
+msgstr ""
+
+#: src/ui/main_window.py:113
+msgid "Help"
+msgstr ""
+
+#: src/ui/main_window.py:122
+msgid "Theme Change"
+msgstr ""
+
+#: src/ui/main_window.py:122
+msgid "The theme will be applied after restarting the application."
+msgstr ""
+
+#: src/ui/main_window.py:128
+msgid "Language Change"
+msgstr ""
+
+#: src/ui/main_window.py:128
+msgid "The language will be applied after restarting the application."
+msgstr ""
+
+#: src/ui/main_window.py:156
+msgid "Navigation"
+msgstr ""
+
+#: src/ui/components/code_editor.py:268 src/ui/components/code_editor.py:276
+#: src/ui/main_window.py:160 src/ui/main_window.py:194
+#: src/ui/main_window.py:450
+msgid "Code Analysis"
+msgstr ""
+
+#: src/ui/main_window.py:162
+msgid "Chat"
+msgstr ""
+
+#: src/ui/main_window.py:163
+msgid "Dashboard"
+msgstr ""
+
+#: src/ui/main_window.py:164
+msgid "Resources"
+msgstr ""
+
+#: src/ui/main_window.py:165 src/ui/main_window.py:363
+msgid "Progress"
+msgstr ""
+
+#: src/ui/main_window.py:226
+msgid "📚 Learning"
+msgstr ""
+
+#: src/ui/main_window.py:242
+msgid "💬 Chat"
+msgstr ""
+
+#: src/ui/main_window.py:253
+msgid "📊 Dashboard"
+msgstr ""
+
+#: src/ui/main_window.py:264
+msgid "📚 Resources"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:368
+#: src/ui/components/learning_tab.py:473 src/ui/main_window.py:273
+msgid "Ready"
+msgstr ""
+
+#: src/ui/main_window.py:276
+msgid "Progress: 0%"
+msgstr ""
+
+#: src/ui/main_window.py:285
+#, python-brace-format
+msgid "Progress: {progress}%"
+msgstr ""
+
+#: src/ui/main_window.py:290
+#, python-brace-format
+msgid "탭 전환 요청: {tab_name}"
+msgstr ""
+
+#: src/ui/main_window.py:295
+msgid "새 코드 생성"
+msgstr ""
+
+#: src/ui/main_window.py:296
+msgid "Creating new code..."
+msgstr ""
+
+#: src/ui/components/code_editor.py:204 src/ui/components/code_editor.py:229
+#: src/ui/main_window.py:300 src/ui/main_window.py:311
+msgid "Python Files"
+msgstr ""
+
+#: src/ui/components/code_editor.py:204 src/ui/components/code_editor.py:229
+#: src/ui/main_window.py:300 src/ui/main_window.py:311
+msgid "All Files"
+msgstr ""
+
+#: src/ui/main_window.py:304
+#, python-brace-format
+msgid "파일 열기: {filename}"
+msgstr ""
+
+#: src/ui/main_window.py:305
+#, python-brace-format
+msgid "Opened: {filename}"
+msgstr ""
+
+#: src/ui/main_window.py:315
+#, python-brace-format
+msgid "파일 저장: {filename}"
+msgstr ""
+
+#: src/ui/main_window.py:316
+#, python-brace-format
+msgid "Saved: {filename}"
+msgstr ""
+
+#: src/ui/main_window.py:320
+msgid "데이터 내보내기"
+msgstr ""
+
+#: src/ui/main_window.py:321
+msgid "Export functionality coming soon!"
+msgstr ""
+
+#: src/ui/main_window.py:325
+msgid "실행 취소"
+msgstr ""
+
+#: src/ui/main_window.py:329
+msgid "재실행"
+msgstr ""
+
+#: src/ui/main_window.py:333
+msgid "잘라내기"
+msgstr ""
+
+#: src/ui/main_window.py:337
+msgid "복사"
+msgstr ""
+
+#: src/ui/main_window.py:341
+msgid "붙여넣기"
+msgstr ""
+
+#: src/ui/main_window.py:352
+msgid "설정 열기"
+msgstr ""
+
+#: src/ui/main_window.py:353
+msgid "Settings dialog coming soon!"
+msgstr ""
+
+#: src/ui/main_window.py:357
+msgid "학습 시작"
+msgstr ""
+
+#: src/ui/main_window.py:358
+msgid "Starting learning session..."
+msgstr ""
+
+#: src/ui/main_window.py:362
+msgid "진도 표시"
+msgstr ""
+
+#: src/ui/main_window.py:363
+msgid "Your learning progress: 45%"
+msgstr ""
+
+#: src/ui/main_window.py:367
+msgid "성취 표시"
+msgstr ""
+
+#: src/ui/main_window.py:368
+msgid "Achievements: 5 unlocked"
+msgstr ""
+
+#: src/ui/main_window.py:372
+msgid "문서 표시"
+msgstr ""
+
+#: src/ui/main_window.py:373
+msgid "Documentation coming soon!"
+msgstr ""
+
+#: src/ui/main_window.py:380
+msgid "Python learning AI based mentoring platform"
+msgstr ""
+
+#: src/ui/main_window.py:382
+msgid "Features"
+msgstr ""
+
+#: src/ui/main_window.py:383
+msgid "AI based code analysis"
+msgstr ""
+
+#: src/ui/main_window.py:384
+msgid "Real-time mentoring"
+msgstr ""
+
+#: src/ui/main_window.py:385
+msgid "Progress tracking"
+msgstr ""
+
+#: src/ui/main_window.py:386
+msgid "Adaptive learning"
+msgstr ""
+
+#: src/ui/main_window.py:388
+msgid "Developer"
+msgstr ""
+
+#: src/ui/main_window.py:394
+msgid "Are you sure you want to quit?"
+msgstr ""
+
+#: src/ui/components/code_editor.py:252 src/ui/main_window.py:404
+msgid "Run Code"
+msgstr ""
+
+#: src/ui/components/code_editor.py:252 src/ui/main_window.py:404
+msgid "There is no code to run."
+msgstr ""
+
+#: src/ui/main_window.py:407
+msgid "코드 실행"
+msgstr ""
+
+#: src/ui/main_window.py:408
+msgid "Running code..."
+msgstr ""
+
+#: src/ui/components/code_editor.py:296 src/ui/components/code_editor.py:298
+#: src/ui/main_window.py:429 src/ui/main_window.py:432
+msgid "Execution Result"
+msgstr ""
+
+#: src/ui/main_window.py:429
+#, python-brace-format
+msgid ""
+"✅ Execution successful!\n"
+"\n"
+"📄 Output:\n"
+"{output}"
+msgstr ""
+
+#: src/ui/main_window.py:430
+#, python-brace-format
+msgid "Code executed successfully! Output: {len_output} chars"
+msgstr ""
+
+#: src/ui/main_window.py:432
+msgid ""
+"✅ Code executed successfully.\n"
+"(No output)"
+msgstr ""
+
+#: src/ui/main_window.py:433
+msgid "Code executed successfully!"
+msgstr ""
+
+#: src/ui/main_window.py:435
+msgid "코드 실행 성공"
+msgstr ""
+
+#: src/ui/main_window.py:438
+#, python-brace-format
+msgid ""
+"❌ An error occurred while running the code:\n"
+"\n"
+"{error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:303 src/ui/main_window.py:439
+msgid "Execution Error"
+msgstr ""
+
+#: src/ui/main_window.py:440
+#, python-brace-format
+msgid "Execution error: {error}"
+msgstr ""
+
+#: src/ui/main_window.py:441
+#, python-brace-format
+msgid "코드 실행 실패: {error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:268 src/ui/main_window.py:450
+msgid "There is no code to analyze."
+msgstr ""
+
+#: src/ui/main_window.py:453
+msgid "코드 분석"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:655 src/ui/main_window.py:454
+msgid "Analyzing code..."
+msgstr ""
+
+#: src/ui/main_window.py:469
+msgid "✅ Syntax OK"
+msgstr ""
+
+#: src/ui/main_window.py:471
+#, python-brace-format
+msgid "❌ Syntax Error: {error_msg} (line {line_num})"
+msgstr ""
+
+#: src/ui/main_window.py:474
+msgid "Code Analysis Result"
+msgstr ""
+
+#: src/ui/main_window.py:476
+msgid "Length"
+msgstr ""
+
+#: src/ui/main_window.py:476
+msgid "lines"
+msgstr ""
+
+#: src/ui/main_window.py:476
+msgid "characters"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:514 src/ui/main_window.py:477
+msgid "Functions"
+msgstr ""
+
+#: src/ui/main_window.py:478
+msgid "Classes"
+msgstr ""
+
+#: src/ui/main_window.py:479
+msgid "Comments"
+msgstr ""
+
+#: src/ui/main_window.py:480
+msgid "Syntax"
+msgstr ""
+
+#: src/ui/main_window.py:482
+msgid "Tip: Configure the Claude API for more detailed analysis!"
+msgstr ""
+
+#: src/ui/main_window.py:484
+msgid "Code Analysis Complete"
+msgstr ""
+
+#: src/ui/main_window.py:485
+msgid "Analysis complete!"
+msgstr ""
+
+#: src/ui/main_window.py:486
+msgid "코드 분석 완료"
+msgstr ""
+
+#: src/ui/main_window.py:489
+#, python-brace-format
+msgid ""
+"An error occurred during code analysis:\n"
+"\n"
+"{error}"
+msgstr ""
+
+#: src/ui/main_window.py:490
+msgid "Analysis Error"
+msgstr ""
+
+#: src/ui/main_window.py:491
+#, python-brace-format
+msgid "Analysis error: {error}"
+msgstr ""
+
+#: src/ui/main_window.py:492
+#, python-brace-format
+msgid "코드 분석 실패: {error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:25
+msgid "Pygments is not installed, so only basic highlighting is used"
+msgstr ""
+
+#: src/ui/components/code_editor.py:41
+msgid "Code editor initialization complete"
+msgstr ""
+
+#: src/ui/components/code_editor.py:55
+msgid "📁 Open"
+msgstr ""
+
+#: src/ui/components/code_editor.py:56
+msgid "💾 Save"
+msgstr ""
+
+#: src/ui/components/code_editor.py:57
+msgid "✂️ Cut"
+msgstr ""
+
+#: src/ui/components/code_editor.py:58
+#: src/ui/components/enhanced_chat_tab.py:291
+#: src/ui/components/resources_tab.py:206
+msgid "📋 Copy"
+msgstr ""
+
+#: src/ui/components/code_editor.py:59
+msgid "📌 Paste"
+msgstr ""
+
+#: src/ui/components/code_editor.py:63
+msgid "▶️ Run"
+msgstr ""
+
+#: src/ui/components/code_editor.py:64
+msgid "🔍 Analyze"
+msgstr ""
+
+#: src/ui/components/code_editor.py:65
+msgid "🧹 Clear"
+msgstr ""
+
+#: src/ui/components/code_editor.py:108
+msgid "Line: 1, Col: 1 | Python"
+msgstr ""
+
+#: src/ui/components/code_editor.py:182
+#, python-brace-format
+msgid ""
+"Line: {line_num}/{total_lines}, Col: {col_num} | Chars: {char_count} | "
+"Python"
+msgstr ""
+
+#: src/ui/components/code_editor.py:198
+msgid "Code editor cleared"
+msgstr ""
+
+#: src/ui/components/code_editor.py:203
+msgid "Open Python File"
+msgstr ""
+
+#: src/ui/components/code_editor.py:204 src/ui/components/code_editor.py:229
+msgid "Text Files"
+msgstr ""
+
+#: src/ui/components/code_editor.py:213
+#, python-brace-format
+msgid "File opened: {filename}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:216
+msgid "File Open"
+msgstr ""
+
+#: src/ui/components/code_editor.py:216
+#, python-brace-format
+msgid "{filename} opened."
+msgstr ""
+
+#: src/ui/components/code_editor.py:219
+msgid "File Open Error"
+msgstr ""
+
+#: src/ui/components/code_editor.py:219
+#, python-brace-format
+msgid ""
+"Could not open file:\n"
+"{error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:220
+#, python-brace-format
+msgid "File open failed: {error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:227
+msgid "Save Python File"
+msgstr ""
+
+#: src/ui/components/code_editor.py:240
+#, python-brace-format
+msgid "File saved: {current_file}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:241
+msgid "File Save"
+msgstr ""
+
+#: src/ui/components/code_editor.py:241
+#, python-brace-format
+msgid "Saved to {current_file}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:244
+msgid "File Save Error"
+msgstr ""
+
+#: src/ui/components/code_editor.py:244
+#, python-brace-format
+msgid ""
+"Could not save file:\n"
+"{error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:245
+#, python-brace-format
+msgid "File save failed: {error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:255
+msgid "Request to run code"
+msgstr ""
+
+#: src/ui/components/code_editor.py:271
+msgid "Request to analyze code"
+msgstr ""
+
+#: src/ui/components/code_editor.py:276
+msgid "Code analysis feature is not ready."
+msgstr ""
+
+#: src/ui/components/code_editor.py:296
+#, python-brace-format
+msgid ""
+"Execution successful!\n"
+"\n"
+"Output:\n"
+"{output}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:298
+msgid ""
+"Code executed successfully.\n"
+"(No output)"
+msgstr ""
+
+#: src/ui/components/code_editor.py:300
+msgid "Code execution successful"
+msgstr ""
+
+#: src/ui/components/code_editor.py:303
+#, python-brace-format
+msgid ""
+"An error occurred while running the code:\n"
+"\n"
+"{error}"
+msgstr ""
+
+#: src/ui/components/code_editor.py:304
+#, python-brace-format
+msgid "Code execution failed: {error}"
+msgstr ""
+
+#: src/ui/components/dashboard_tab.py:45
+msgid "Dashboard initialization complete"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:51
+msgid "Enhanced chat tab initialization complete"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:73
+msgid "➕ New Conversation"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:86
+#: src/ui/components/enhanced_chat_tab.py:719
+msgid "New Conversation"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:96
+msgid "📜 History"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:113
+msgid "Tutoring Mode:"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:135
+msgid "Level:"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:157
+msgid "Messages: 0"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:227
+msgid "📋 Share Code"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:240
+#: src/ui/components/enhanced_chat_tab.py:574
+#: src/ui/components/enhanced_chat_tab.py:615
+msgid "📤 Send"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:254
+msgid "Ctrl+Enter to send"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:268
+msgid "📝 Code Context"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:303
+msgid "🗑️ Clear"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:319
+msgid "🎓 Tutoring Session"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:343
+msgid "🔄 New Session"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:355
+msgid "⏹️ End"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:394
+#, python-brace-format
+msgid "Tutoring Session {timestamp}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:418
+msgid "New tutoring session started"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:419
+#, python-brace-format
+msgid "New tutoring session initialized: {session_id}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:422
+#, python-brace-format
+msgid "Session initialization failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:423
+#: src/ui/components/enhanced_chat_tab.py:572
+#: src/ui/components/enhanced_chat_tab.py:764
+#: src/ui/components/enhanced_chat_tab.py:803
+#: src/ui/components/enhanced_chat_tab.py:826
+#: src/ui/components/learning_tab.py:496 src/ui/components/learning_tab.py:594
+#: src/ui/components/learning_tab.py:682 src/ui/components/learning_tab.py:728
+#: src/ui/components/learning_tab.py:738
+msgid "Error"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:423
+#, python-brace-format
+msgid "Failed to initialize session: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:428
+msgid "Free Conversation"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:429
+msgid "Code Review"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:430
+msgid "Problem Solving"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:431
+msgid "Concept Explanation"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:432
+msgid "Debugging Help"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:435
+msgid "Hello! I am your Python AI Tutor."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:437
+msgid "Current Mode"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:438
+#: src/ui/components/enhanced_chat_tab.py:629
+msgid "Level"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:440
+msgid "How I can help"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:441
+msgid "Explain Python concepts and provide examples"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:442
+msgid "Analyze code and provide feedback"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:443
+msgid "Find bugs and suggest solutions"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:444
+msgid "Discuss optimization and best practices"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:445
+msgid "Guide you through problem-solving steps"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:447
+msgid "Click the 'Share Code' button to analyze your code."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:449
+msgid "Please ask a question or share your code!"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:462
+msgid "👤 User"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:463
+msgid "🤖 Tutor"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:464
+msgid "ℹ️ System"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:508
+#: src/ui/components/enhanced_chat_tab.py:509
+#, python-brace-format
+msgid "Tutoring mode changed: {mode}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:512
+#, python-brace-format
+msgid "Mode change failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:524
+#: src/ui/components/enhanced_chat_tab.py:525
+#, python-brace-format
+msgid "Student level changed: {level}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:528
+#, python-brace-format
+msgid "Level change failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:533
+msgid "Processing"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:533
+msgid "Please wait for the previous message to be processed."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:539
+msgid "Empty Message"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:539
+msgid "Please enter a message."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:544
+msgid "⏳ Processing..."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:571
+#, python-brace-format
+msgid "Message send failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:572
+#, python-brace-format
+msgid "Failed to send message: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:590
+#, python-brace-format
+msgid "AI response generation failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:591
+#, python-brace-format
+msgid "Sorry, an error occurred while generating the response: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:611
+#, python-brace-format
+msgid "AI response display failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:616
+msgid "Response complete"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:626
+msgid "Tutoring Session Info"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:628
+msgid "Mode"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:630
+msgid "Topic"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:632
+msgid "Statistics"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:633
+msgid "Messages"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:634
+msgid "Code Shares"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:635
+msgid "Duration"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:635
+msgid "min"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:637
+msgid "Learning Objectives"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:645
+msgid "Not set"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:653
+#, python-brace-format
+msgid "Messages: {count}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:656
+#, python-brace-format
+msgid "Session info update failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:669
+#: src/ui/components/enhanced_chat_tab.py:673
+msgid "Share Code"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:669
+msgid "Code has been added to the context."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:671
+msgid "No Code"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:671
+msgid "There is no code to share."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:673
+msgid "Code sharing feature is not ready."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:682
+#, python-brace-format
+msgid "Code context updated ({length} chars)"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:699
+msgid "Code context copied"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:701
+msgid "Copy Failed"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:701
+msgid "There is no code to copy."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:703
+#, python-brace-format
+msgid "Code copy failed: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:715
+msgid "Code context cleared"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:719
+msgid ""
+"Are you sure you want to save the current conversation and start a new "
+"one?"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:728
+#: src/ui/components/enhanced_chat_tab.py:733
+msgid "Conversation History"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:728
+msgid "No saved conversations found."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:755
+msgid "Load"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:763
+#, python-brace-format
+msgid "Failed to show conversation history: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:764
+#, python-brace-format
+msgid "Could not load conversation history: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:776
+msgid "Rate Session"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:777
+msgid "Please rate this tutoring session (1-5):"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:792
+msgid "Session Ended"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:792
+msgid "The tutoring session has ended."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:793
+msgid "Tutoring session ended"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:796
+#, python-brace-format
+msgid "Failed to end tutoring session: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:803
+msgid "Conversation not found."
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:820
+#, python-brace-format
+msgid "Conversation loaded: {title}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:822
+#, python-brace-format
+msgid "Conversation loaded: {id}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:825
+#, python-brace-format
+msgid "Failed to load conversation: {error}"
+msgstr ""
+
+#: src/ui/components/enhanced_chat_tab.py:826
+#, python-brace-format
+msgid "Could not load conversation: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:32
+msgid "Learning tab initialization complete"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:74
+msgid "📚 Python Learning Path"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:97
+msgid "Completed: 0/0 topics | Study time: 0 min | XP: 0"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:108 src/ui/components/resources_tab.py:244
+msgid "Difficulty:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:125
+msgid "📖 Curriculum"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:134
+msgid "Learning Topics"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:160
+msgid "Topic Details"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:190
+msgid "Learning Objectives:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:226
+msgid "✏️ Exercises"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:234
+msgid "Problem:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:256
+msgid "Hint:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:264
+msgid "None"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:273
+msgid "Show Hint"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:288
+msgid "Write Code:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:303
+msgid "Submit"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:319
+msgid "Result:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:339
+msgid "🏆 Achievements"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:347
+msgid "My Achievements"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:355
+msgid "Earned: 0/0"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:379
+msgid "📊 Progress"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:387
+msgid "Learning Progress"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:399
+msgid "Overall Progress:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:427
+msgid "Progress by Level:"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:452
+msgid "🔄 Refresh"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:462
+msgid "⏭️ Next Exercise"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:491
+msgid "Learning controller not available. Using default data."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:495
+#, python-brace-format
+msgid "Failed to load curriculum data: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:496
+#, python-brace-format
+msgid "Could not load curriculum data: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:506
+#, python-brace-format
+msgid "{count} topics loaded successfully"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:512 src/ui/components/learning_tab.py:549
+msgid "Python Basics"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:513
+msgid "Control Flow"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:527
+#, python-brace-format
+msgid "Level changed: {level}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:551
+msgid "Learn the basic syntax and concepts of Python."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:573
+#, python-brace-format
+msgid "Starting topic: {topic_id}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:586
+#, python-brace-format
+msgid "Exercise: {title}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:588 src/ui/components/learning_tab.py:590
+#: src/ui/components/learning_tab.py:722 src/ui/components/learning_tab.py:724
+msgid "Notification"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:588
+msgid "There are no exercises for this topic yet."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:590 src/ui/components/learning_tab.py:724
+msgid "Learning controller is not initialized."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:593
+#, python-brace-format
+msgid "Failed to start topic: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:594
+#, python-brace-format
+msgid "Could not start topic: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:604
+#, python-brace-format
+msgid "{count} hints available"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:609
+msgid "No hints"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:629
+#, python-brace-format
+msgid ""
+"💡 Hint {index}: {hint}\n"
+"\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:634
+msgid "All hints shown"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:637
+#, python-brace-format
+msgid "Failed to show hint: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:643 src/ui/components/learning_tab.py:650
+msgid "Warning"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:643
+msgid "No active exercise."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:650
+msgid "Please enter your code."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:668
+msgid "Congratulations!"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:668
+#, python-brace-format
+msgid "You have completed the exercise! XP +{xp}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:671
+msgid "Result"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:671
+msgid "Try again!"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:673
+msgid "Submission complete"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:678
+msgid ""
+"✅ Code submitted!\n"
+"\n"
+"(Test mode - no real analysis results)"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:681
+#, python-brace-format
+msgid "Exercise submission failed: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:682
+#, python-brace-format
+msgid "An error occurred during submission: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:689
+#, python-brace-format
+msgid "Score: {score}/10\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:690
+#, python-brace-format
+msgid "Completed: {completed}\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:690
+msgid "Yes"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:690
+msgid "No"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:691
+#, python-brace-format
+msgid ""
+"XP Earned: {xp}\n"
+"\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:696
+#, python-brace-format
+msgid ""
+"Feedback:\n"
+"{feedback}\n"
+"\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:701
+msgid "Strengths:\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:706
+msgid ""
+"\n"
+"Suggestions for improvement:\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:720
+#, python-brace-format
+msgid "New exercise: {title}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:722
+msgid "No recommended exercises available."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:727
+#, python-brace-format
+msgid "Failed to load next exercise: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:728
+#, python-brace-format
+msgid "Could not load next exercise: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:733
+msgid "Refreshing data"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:735
+msgid "Complete"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:735
+msgid "Data has been refreshed."
+msgstr ""
+
+#: src/ui/components/learning_tab.py:737 src/ui/components/learning_tab.py:738
+#, python-brace-format
+msgid "Data refresh failed: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:754
+#, python-brace-format
+msgid "Completed: {completed}/{total} topics | "
+msgstr ""
+
+#: src/ui/components/learning_tab.py:755
+#, python-brace-format
+msgid "Study time: {minutes} min | "
+msgstr ""
+
+#: src/ui/components/learning_tab.py:756
+#, python-brace-format
+msgid "XP: {xp}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:770
+#, python-brace-format
+msgid "  Completed: {completed}/{total}\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:771
+#, python-brace-format
+msgid "  Completion Rate: {rate:.1f}%\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:772
+#, python-brace-format
+msgid ""
+"  Average Score: {score:.1f}/10\n"
+"\n"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:778
+#, python-brace-format
+msgid "Failed to update progress display: {error}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:823
+#, python-brace-format
+msgid "Earned: {earned}/{total}"
+msgstr ""
+
+#: src/ui/components/learning_tab.py:832
+#, python-brace-format
+msgid "Failed to update achievements display: {error}"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:40
+msgid "Resources and learning materials tab initialized"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:78
+msgid "📚 Resources and Learning Materials"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:92
+msgid "🔍 Search:"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:113
+msgid "Search"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:125
+msgid "Reset"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:138
+msgid "💻 Code Examples"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:150
+msgid "Categories"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:174
+msgid "Example Code"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:196
+msgid "▶ Run"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:218
+msgid "📖 Learning Guides"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:230
+msgid "Learning Guides"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:283
+msgid "Guide Content"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:305
+msgid "✅ Mark as Complete"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:318
+msgid "🔧 Troubleshooting"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:330
+msgid "Problem Type"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:342
+msgid "Syntax Error"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:343
+msgid "Runtime Error"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:344
+msgid "Logical Error"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:345
+msgid "Performance Issue"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:346
+msgid "Debugging"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:366
+msgid "Common Problems:"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:393
+msgid "Solution"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:415
+msgid "💡 Show Related Example"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:425
+msgid "🔍 Learn More"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:437
+msgid "⭐ Best Practices"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:449
+msgid "Coding Best Practices Topics"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:459
+msgid "📝 Code Style"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:460
+msgid "PEP 8 guidelines, naming conventions, code formatting"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:465
+msgid "⚠️ Error Handling"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:466
+msgid "Exception handling, error messages, debugging"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:471
+msgid "🚀 Performance Optimization"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:472
+msgid "Algorithms, memory management, efficiency"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:477
+msgid "🔒 Security"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:478
+msgid "Input validation, data protection, secure coding"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:483
+msgid "🧪 Testing"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:484
+msgid "Unit testing, test-driven development"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:489
+msgid "📚 Documentation"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:490
+msgid "Comments, docstrings, README writing"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:530
+msgid "📖 View"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:547
+msgid "📋 Best Practices Summary"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:571
+msgid "Resources loaded"
+msgstr ""
+
+#: src/ui/components/resources_tab.py:582
+msgid "Total resources: 0"
+msgstr ""
+
