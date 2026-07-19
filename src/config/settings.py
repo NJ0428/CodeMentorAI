@@ -46,8 +46,8 @@ class LoggingSettings:
 @dataclass
 class UISettings:
     """UI 관련 설정"""
-    theme: str = field(default_factory=lambda: os.getenv("THEME", "default"))
-    language: str = field(default_factory=lambda: os.getenv("DEFAULT_LANGUAGE", "en"))
+    theme: str = field(default_factory=lambda: os.getenv("THEME", "light"))
+    language: str = field(default_factory=lambda: os.getenv("DEFAULT_LANGUAGE", "ko"))
     window_width: int = 1200
     window_height: int = 800
     font_family: str = "Consolas"
