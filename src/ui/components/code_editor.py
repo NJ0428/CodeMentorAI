@@ -10,6 +10,10 @@ import sys
 from pathlib import Path
 from loguru import logger
 
+from src.ui.language_manager import get_translator
+
+_ = get_translator()
+
 try:
     from pygments.lexers import PythonLexer
     from pygments import highlight
@@ -18,15 +22,16 @@ try:
     PYGMENTS_AVAILABLE = True
 except ImportError:
     PYGMENTS_AVAILABLE = False
-    logger.warning("Pygments가 설치되지 않아 기본 하이라이팅만 사용합니다")
+    logger.warning(_("Pygments is not installed, so only basic highlighting is used"))
 
 
 class CodeEditor(tk.Frame):
     """Python 코드 에디터"""
 
-    def __init__(self, parent, on_run: Optional[Callable] = None, on_analyze: Optional[Callable] = None):
+    def __init__(self, parent, style_manager, shortcut_manager, on_run: Optional[Callable] = None, on_analyze: Optional[Callable] = None):
         super().__init__(parent)
-
+        self.style_manager = style_manager
+        self.shortcut_manager = shortcut_manager
         self.on_run = on_run
         self.on_analyze = on_analyze
         self.current_file = None
@@ -34,36 +39,38 @@ class CodeEditor(tk.Frame):
         self._create_ui()
         self._setup_bindings()
 
-        logger.info("코드 에디터 초기화 완료")
+        logger.info(_("Code editor initialization complete"))
 
     def _create_ui(self):
         """UI 컴포넌트 생성"""
+        colors = self.style_manager.get_current_theme_colors()
+        
         # 도구 모음
-        toolbar = tk.Frame(self, bg="#f0f0f0", height=40)
+        toolbar = tk.Frame(self, bg=colors["bg_alt"], height=40)
         toolbar.pack(fill=tk.X, padx=5, pady=5)
 
         # 버튼 스타일
-        button_style = {"font": ("Arial", 9), "padx": 8, "pady": 4}
+        button_style = {"font": ("Arial", 9), "padx": 8, "pady": 4, "relief": tk.FLAT}
 
         # 도구 모음 버튼
-        tk.Button(toolbar, text="📁 열기", command=self.open_file, bg="#e1e1e1", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="💾 저장", command=self.save_file, bg="#e1e1e1", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="✂️ cut", command=self.cut, bg="#e1e1e1", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="📋 copy", command=self.copy, bg="#e1e1e1", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="📌 paste", command=self.paste, bg="#e1e1e1", **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("📁 Open"), command=self.open_file, bg=colors["primary"], fg=colors["bg"], **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("💾 Save"), command=self.save_file, bg=colors["primary"], fg=colors["bg"], **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("✂️ Cut"), command=self.cut, bg=colors["secondary"], fg=colors["bg"], **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("📋 Copy"), command=self.copy, bg=colors["secondary"], fg=colors["bg"], **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("📌 Paste"), command=self.paste, bg=colors["secondary"], fg=colors["bg"], **button_style).pack(side=tk.LEFT, padx=2)
 
-        tk.Frame(toolbar, width=20, bg="#f0f0f0").pack(side=tk.LEFT, padx=5)
+        tk.Frame(toolbar, width=20, bg=colors["bg_alt"]).pack(side=tk.LEFT, padx=5)
 
-        tk.Button(toolbar, text="▶️ 실행", command=self.run_code, bg="#4CAF50", fg="white", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="🔍 분석", command=self.analyze_code, bg="#2196F3", fg="white", **button_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(toolbar, text="🧹 지우기", command=self.clear, bg="#FF9800", fg="white", **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("▶️ Run"), command=self.run_code, bg=colors["success"], fg="white", **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("🔍 Analyze"), command=self.analyze_code, bg=colors["info"], fg="white", **button_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(toolbar, text=_("🧹 Clear"), command=self.clear, bg=colors["warning"], fg="white", **button_style).pack(side=tk.LEFT, padx=2)
 
         # 메인 컨텐츠 영역
-        content_frame = tk.Frame(self)
+        content_frame = tk.Frame(self, bg=colors["bg"])
         content_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 라인 번호와 코드 에디터를 위한 프레임
-        editor_frame = tk.Frame(content_frame)
+        editor_frame = tk.Frame(content_frame, bg=colors["bg"])
         editor_frame.pack(fill=tk.BOTH, expand=True)
 
         # 라인 번호
@@ -73,8 +80,8 @@ class CodeEditor(tk.Frame):
             padx=3,
             takefocus=0,
             border=0,
-            background="#f5f5f5",
-            foreground="#666666",
+            background=colors["bg_alt"],
+            foreground=colors["fg_alt"],
             font=("Consolas", 10),
             state="disabled"
         )
@@ -85,11 +92,11 @@ class CodeEditor(tk.Frame):
             editor_frame,
             wrap=tk.NONE,
             font=("Consolas", 10),
-            background="#ffffff",
-            foreground="#333333",
-            insertbackground="#333333",
-            selectbackground="#0078d4",
-            selectforeground="#ffffff",
+            background=colors["editor_bg"],
+            foreground=colors["editor_fg"],
+            insertbackground=colors["editor_fg"],
+            selectbackground=colors["primary"],
+            selectforeground=colors["editor_bg"],
             borderwidth=1,
             relief="solid"
         )
@@ -99,7 +106,7 @@ class CodeEditor(tk.Frame):
         self.text.vbar.config(command=self._on_vscroll)
 
         # 상태 바
-        self.status_bar = tk.Label(content_frame, text="줄: 1, 열: 1 | Python", anchor=tk.W, bg="#f0f0f0", font=("Arial", 8))
+        self.status_bar = tk.Label(content_frame, text=_("Line: 1, Col: 1 | Python"), anchor=tk.W, bg=colors["bg_alt"], fg=colors["fg_alt"], font=("Arial", 8))
         self.status_bar.pack(fill=tk.X, pady=(5, 0))
 
         # 초기 라인 번호 업데이트
@@ -116,10 +123,10 @@ class CodeEditor(tk.Frame):
         self.text.bind("<Key>", self._on_key)
 
         # 단축키
-        self.text.bind("<Control-o>", lambda e: self.open_file())
-        self.text.bind("<Control-s>", lambda e: self.save_file())
-        self.text.bind("<Control-Return>", lambda e: self.run_code())
-        self.text.bind("<F5>", lambda e: self.run_code())
+        self.text.bind(self.shortcut_manager.get_shortcut("file.open"), lambda e: self.open_file())
+        self.text.bind(self.shortcut_manager.get_shortcut("file.save"), lambda e: self.save_file())
+        self.text.bind(self.shortcut_manager.get_shortcut("code.run"), lambda e: self.run_code())
+        self.text.bind("<F5>", lambda e: self.run_code()) # Keep F5 as a hardcoded alternative
 
     def _on_vscroll(self, *args):
         """수직 스크롤 동기화"""
@@ -173,7 +180,7 @@ class CodeEditor(tk.Frame):
         # 문자 수
         char_count = len(self.text.get(1.0, tk.END))
 
-        self.status_bar.config(text=f"줄: {line_num}/{total_lines}, 열: {col_num} | 문자: {char_count} | Python")
+        self.status_bar.config(text=_("Line: {line_num}/{total_lines}, Col: {col_num} | Chars: {char_count} | Python").format(line_num=line_num, total_lines=total_lines, col_num=col_num, char_count=char_count))
 
     def get_code(self) -> str:
         """현재 코드 반환"""
@@ -189,13 +196,13 @@ class CodeEditor(tk.Frame):
         """에디터 비우기"""
         self.text.delete(1.0, tk.END)
         self._update_line_numbers()
-        logger.info("코드 에디터 비움")
+        logger.info(_("Code editor cleared"))
 
     def open_file(self):
         """파일 열기"""
         filename = filedialog.askopenfilename(
-            title="Python 파일 열기",
-            filetypes=[("Python Files", "*.py"), ("Text Files", "*.txt"), ("All Files", "*.*")]
+            title=_("Open Python File"),
+            filetypes=[(_("Python Files"), "*.py"), (_("Text Files"), "*.txt"), (_("All Files"), "*.*")]
         )
 
         if filename:
@@ -204,23 +211,23 @@ class CodeEditor(tk.Frame):
                     code = f.read()
                 self.set_code(code)
                 self.current_file = filename
-                logger.info(f"파일 열기: {filename}")
+                logger.info(_("File opened: {filename}").format(filename=filename))
 
                 # 상태 업데이트
-                messagebox.showinfo("파일 열기", f"{filename}을 열었습니다.")
+                messagebox.showinfo(_("File Open"), _("{filename} opened.").format(filename=filename))
 
             except Exception as e:
-                messagebox.showerror("파일 열기 오류", f"파일을 열 수 없습니다:\n{e}")
-                logger.error(f"파일 열기 실패: {e}")
+                messagebox.showerror(_("File Open Error"), _("Could not open file:\n{error}").format(error=e))
+                logger.error(_("File open failed: {error}").format(error=e))
 
     def save_file(self):
         """파일 저장"""
         if not self.current_file:
             # 새 파일 이름으로 저장
             filename = filedialog.asksaveasfilename(
-                title="Python 파일 저장",
+                title=_("Save Python File"),
                 defaultextension=".py",
-                filetypes=[("Python Files", "*.py"), ("Text Files", "*.txt"), ("All Files", "*.*")]
+                filetypes=[(_("Python Files"), "*.py"), (_("Text Files"), "*.txt"), (_("All Files"), "*.*")]
             )
             if not filename:
                 return
@@ -231,22 +238,22 @@ class CodeEditor(tk.Frame):
             with open(self.current_file, "w", encoding="utf-8") as f:
                 f.write(code)
 
-            logger.info(f"파일 저장: {self.current_file}")
-            messagebox.showinfo("파일 저장", f"{self.current_file}에 저장했습니다.")
+            logger.info(_("File saved: {current_file}").format(current_file=self.current_file))
+            messagebox.showinfo(_("File Save"), _("Saved to {current_file}").format(current_file=self.current_file))
 
         except Exception as e:
-            messagebox.showerror("파일 저장 오류", f"파일을 저장할 수 없습니다:\n{e}")
-            logger.error(f"파일 저장 실패: {e}")
+            messagebox.showerror(_("File Save Error"), _("Could not save file:\n{error}").format(error=e))
+            logger.error(_("File save failed: {error}").format(error=e))
 
     def run_code(self):
         """코드 실행"""
         code = self.get_code()
 
         if not code.strip():
-            messagebox.showwarning("코드 실행", "실행할 코드가 없습니다.")
+            messagebox.showwarning(_("Run Code"), _("There is no code to run."))
             return
 
-        logger.info("코드 실행 요청")
+        logger.info(_("Request to run code"))
 
         if self.on_run:
             self.on_run(code)
@@ -259,15 +266,15 @@ class CodeEditor(tk.Frame):
         code = self.get_code()
 
         if not code.strip():
-            messagebox.showwarning("코드 분석", "분석할 코드가 없습니다.")
+            messagebox.showwarning(_("Code Analysis"), _("There is no code to analyze."))
             return
 
-        logger.info("코드 분석 요청")
+        logger.info(_("Request to analyze code"))
 
         if self.on_analyze:
             self.on_analyze(code)
         else:
-            messagebox.showinfo("코드 분석", "코드 분석 기능이 준비되지 않았습니다.")
+            messagebox.showinfo(_("Code Analysis"), _("Code analysis feature is not ready."))
 
     def _execute_python_code(self, code: str):
         """Python 코드 직접 실행"""
@@ -287,15 +294,16 @@ class CodeEditor(tk.Frame):
             output = captured_output.getvalue()
 
             if output:
-                messagebox.showinfo("실행 결과", f"실행 성공!\n\n출력:\n{output}")
+                messagebox.showinfo(_("Execution Result"), _("Execution successful!\n\nOutput:\n{output}").format(output=output))
             else:
-                messagebox.showinfo("실행 결과", "코드가 성공적으로 실행되었습니다.\n(출력 없음)")
+                messagebox.showinfo(_("Execution Result"), _("Code executed successfully.\n(No output)"))
 
-            logger.info("코드 실행 성공")
+            logger.info(_("Code execution successful"))
 
         except Exception as e:
-            messagebox.showerror("실행 오류", f"코드 실행 중 오류가 발생했습니다:\n\n{str(e)}")
-            logger.error(f"코드 실행 실패: {e}")
+            messagebox.showerror(_("Execution Error"), _("An error occurred while running the code:\n\n{error}").format(error=e))
+            logger.error(_("Code execution failed: {error}").format(error=e))
+
 
     # 텍스트 편집 기능
     def cut(self):
