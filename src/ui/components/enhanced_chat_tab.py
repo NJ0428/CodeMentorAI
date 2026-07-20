@@ -17,14 +17,18 @@ from src.learning.tutoring_system import (
     get_interactive_tutor
 )
 from src.database.repositories.chat_repository import get_chat_repository
+from src.ui.language_manager import get_translator
+
+_ = get_translator()
 
 
 class EnhancedChatTab(tk.Frame):
     """향상된 채팅 탭 컴포넌트"""
 
-    def __init__(self, parent, on_code_share: Optional[Callable] = None):
+    def __init__(self, parent, style_manager, shortcut_manager, on_code_share: Optional[Callable] = None):
         super().__init__(parent)
-
+        self.style_manager = style_manager
+        self.shortcut_manager = shortcut_manager
         self.on_code_share = on_code_share
         self.current_user_id = 1  # 기본 사용자 ID
         self.is_processing = False
@@ -45,39 +49,44 @@ class EnhancedChatTab(tk.Frame):
         # 기본 대화 및 세션 생성
         self._initialize_session()
 
-        logger.info("향상된 채팅 탭 초기화 완료")
+        logger.info(_("Enhanced chat tab initialization complete"))
 
     def _create_ui(self):
         """UI 컴포넌트 생성"""
+        colors = self.style_manager.get_current_theme_colors()
+        self.configure(bg=colors["bg"])
+        
         # 메인 컨테이너
-        main_container = tk.Frame(self)
+        main_container = tk.Frame(self, bg=colors["bg"])
         main_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # 상단 도구 모음
-        toolbar = tk.Frame(main_container, bg="#f0f0f0", height=60)
+        toolbar = tk.Frame(main_container, bg=colors["bg_alt"], height=60)
         toolbar.pack(fill=tk.X, pady=(0, 10))
 
         # 첫 번째 행: 대화 관리
-        first_row = tk.Frame(toolbar, bg="#f0f0f0")
+        first_row = tk.Frame(toolbar, bg=colors["bg_alt"])
         first_row.pack(fill=tk.X, pady=5)
 
         # 새 대화 버튼
         tk.Button(
             first_row,
-            text="➕ 새 대화",
+            text=_("➕ New Conversation"),
             command=self._create_new_conversation,
-            bg="#4CAF50",
+            bg=colors["success"],
             fg="white",
             font=("Arial", 10),
             padx=15,
-            pady=5
+            pady=5,
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
         # 대화 제목
         self.conversation_label = tk.Label(
             first_row,
-            text="새 대화",
-            bg="#f0f0f0",
+            text=_("New Conversation"),
+            bg=colors["bg_alt"],
+            fg=colors["fg"],
             font=("Arial", 12, "bold")
         )
         self.conversation_label.pack(side=tk.LEFT, padx=10)
@@ -85,24 +94,26 @@ class EnhancedChatTab(tk.Frame):
         # 대화 기록 버튼
         tk.Button(
             first_row,
-            text="📜 기록",
+            text=_("📜 History"),
             command=self._show_conversation_history,
-            bg="#2196F3",
+            bg=colors["info"],
             fg="white",
             font=("Arial", 10),
             padx=15,
-            pady=5
+            pady=5,
+            relief=tk.FLAT
         ).pack(side=tk.RIGHT, padx=5)
 
         # 두 번째 행: 튜터링 설정
-        second_row = tk.Frame(toolbar, bg="#f0f0f0")
+        second_row = tk.Frame(toolbar, bg=colors["bg_alt"])
         second_row.pack(fill=tk.X, pady=5)
 
         # 튜터링 모드 선택
         tk.Label(
             second_row,
-            text="튜터링 모드:",
-            bg="#f0f0f0",
+            text=_("Tutoring Mode:"),
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9)
         ).pack(side=tk.LEFT, padx=5)
 
@@ -122,8 +133,9 @@ class EnhancedChatTab(tk.Frame):
         # 학생 수준 선택
         tk.Label(
             second_row,
-            text="수준:",
-            bg="#f0f0f0",
+            text=_("Level:"),
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9)
         ).pack(side=tk.LEFT, padx=5)
 
@@ -143,19 +155,19 @@ class EnhancedChatTab(tk.Frame):
         # 세션 통계
         self.stats_label = tk.Label(
             second_row,
-            text="메시지: 0",
-            bg="#f0f0f0",
+            text=_("Messages: 0"),
+            bg=colors["bg_alt"],
             font=("Arial", 8),
-            fg="#666666"
+            fg=colors["fg_alt"]
         )
         self.stats_label.pack(side=tk.RIGHT, padx=5)
 
         # 메인 콘텐츠 영역
-        content_area = tk.Frame(main_container)
+        content_area = tk.Frame(main_container, bg=colors["bg"])
         content_area.pack(fill=tk.BOTH, expand=True)
 
         # 채팅 메시지 영역
-        chat_frame = tk.Frame(content_area)
+        chat_frame = tk.Frame(content_area, bg=colors["bg"])
         chat_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # 메시지 표시 영역
@@ -167,8 +179,8 @@ class EnhancedChatTab(tk.Frame):
             message_frame,
             wrap=tk.WORD,
             font=("Arial", 11),
-            background="#ffffff",
-            foreground="#333333",
+            background=colors["editor_bg"],
+            foreground=colors["editor_fg"],
             state="disabled",
             padx=10,
             pady=10
@@ -178,9 +190,9 @@ class EnhancedChatTab(tk.Frame):
         # 메시지 태그 설정 (기존 + 튜터링 모드별)
         self.messages_display.tag_config("user", background="#e3f2fd", font=("Arial", 11, "bold"))
         self.messages_display.tag_config("assistant", background="#f1f8e9")
-        self.messages_display.tag_config("system", foreground="#666666", font=("Arial", 9, "italic"))
-        self.messages_display.tag_config("timestamp", foreground="#999999", font=("Arial", 8))
-        self.messages_display.tag_config("code", background="#f5f5f5", font=("Consolas", 10))
+        self.messages_display.tag_config("system", foreground=colors["fg_alt"], font=("Arial", 9, "italic"))
+        self.messages_display.tag_config("timestamp", foreground=colors["fg_alt"], font=("Arial", 8))
+        self.messages_display.tag_config("code", background=colors["bg_alt"], font=("Consolas", 10))
 
         # 튜터링 모드별 태그
         self.messages_display.tag_config("mode_conversation", foreground="#1976D2")
@@ -190,7 +202,7 @@ class EnhancedChatTab(tk.Frame):
         self.messages_display.tag_config("mode_debugging", foreground="#D32F2F")
 
         # 입력 영역
-        input_frame = tk.Frame(chat_frame)
+        input_frame = tk.Frame(chat_frame, bg=colors["bg"])
         input_frame.pack(fill=tk.X, pady=(0, 10))
 
         # 메시지 입력
@@ -199,60 +211,64 @@ class EnhancedChatTab(tk.Frame):
             wrap=tk.WORD,
             height=4,
             font=("Arial", 11),
-            background="#ffffff",
-            foreground="#333333"
+            background=colors["editor_bg"],
+            foreground=colors["editor_fg"],
+            insertbackground=colors["editor_fg"]
         )
         self.message_input.pack(fill=tk.BOTH, expand=True, pady=(0, 5))
         self.message_input.bind("<Control-Return>", lambda e: self.send_message())
 
         # 입력 도구 모음
-        input_toolbar = tk.Frame(input_frame, bg="#f0f0f0")
+        input_toolbar = tk.Frame(input_frame, bg=colors["bg"])
         input_toolbar.pack(fill=tk.X)
 
         # 코드 공유 버튼
         tk.Button(
             input_toolbar,
-            text="📋 코드 공유",
+            text=_("📋 Share Code"),
             command=self._share_code,
-            bg="#FF9800",
+            bg=colors["warning"],
             fg="white",
             font=("Arial", 9),
             padx=10,
-            pady=3
+            pady=3,
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
         # 전송 버튼
         self.send_button = tk.Button(
             input_toolbar,
-            text="📤 전송",
+            text=_("📤 Send"),
             command=self.send_message,
-            bg="#2196F3",
+            bg=colors["primary"],
             fg="white",
             font=("Arial", 10, "bold"),
             padx=20,
-            pady=5
+            pady=5,
+            relief=tk.FLAT
         )
         self.send_button.pack(side=tk.RIGHT, padx=5)
 
         # 안내 메시지
         tk.Label(
             input_toolbar,
-            text="Ctrl+Enter로 전송",
-            bg="#f0f0f0",
+            text=_("Ctrl+Enter to send"),
+            bg=colors["bg"],
             font=("Arial", 8),
-            fg="#666666"
+            fg=colors["fg_alt"]
         ).pack(side=tk.RIGHT, padx=5)
 
         # 사이드바 (코드 컨텍스트 + 튜터링 정보)
-        sidebar = tk.Frame(content_area, width=300, bg="#f8f9fa")
+        sidebar = tk.Frame(content_area, width=300, bg=colors["bg_alt"])
         sidebar.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0))
         sidebar.pack_propagate(False)
 
         # 코드 컨텍스트 영역
         tk.Label(
             sidebar,
-            text="📝 코드 컨텍스트",
-            bg="#f8f9fa",
+            text=_("📝 Code Context"),
+            bg=colors["bg_alt"],
+            fg=colors["fg"],
             font=("Arial", 11, "bold")
         ).pack(pady=10)
 
@@ -260,37 +276,39 @@ class EnhancedChatTab(tk.Frame):
             sidebar,
             wrap=tk.WORD,
             font=("Consolas", 9),
-            background="#ffffff",
-            foreground="#333333",
+            background=colors["editor_bg"],
+            foreground=colors["editor_fg"],
             height=12,
             state="disabled"
         )
         self.code_context_display.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 코드 컨텍스트 버튼
-        context_toolbar = tk.Frame(sidebar, bg="#f8f9fa")
+        context_toolbar = tk.Frame(sidebar, bg=colors["bg_alt"])
         context_toolbar.pack(fill=tk.X, padx=5, pady=5)
 
         tk.Button(
             context_toolbar,
-            text="📋 복사",
+            text=_("📋 Copy"),
             command=self._copy_code_context,
-            bg="#4CAF50",
+            bg=colors["success"],
             fg="white",
             font=("Arial", 8),
             padx=8,
-            pady=2
+            pady=2,
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=2)
 
         tk.Button(
             context_toolbar,
-            text="🗑️ 삭제",
+            text=_("🗑️ Clear"),
             command=self._clear_code_context,
-            bg="#f44336",
+            bg=colors["danger"],
             fg="white",
             font=("Arial", 8),
             padx=8,
-            pady=2
+            pady=2,
+            relief=tk.FLAT
         ).pack(side=tk.RIGHT, padx=2)
 
         # 구분선
@@ -299,8 +317,9 @@ class EnhancedChatTab(tk.Frame):
         # 튜터링 세션 정보
         tk.Label(
             sidebar,
-            text="🎓 튜터링 세션",
-            bg="#f8f9fa",
+            text=_("🎓 Tutoring Session"),
+            bg=colors["bg_alt"],
+            fg=colors["fg"],
             font=("Arial", 11, "bold")
         ).pack(pady=5)
 
@@ -309,51 +328,55 @@ class EnhancedChatTab(tk.Frame):
             sidebar,
             wrap=tk.WORD,
             font=("Arial", 9),
-            background="#ffffff",
-            foreground="#333333",
+            background=colors["editor_bg"],
+            foreground=colors["editor_fg"],
             height=8,
             state="disabled"
         )
         self.session_info_display.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 세션 관리 버튼
-        session_toolbar = tk.Frame(sidebar, bg="#f8f9fa")
+        session_toolbar = tk.Frame(sidebar, bg=colors["bg_alt"])
         session_toolbar.pack(fill=tk.X, padx=5, pady=5)
 
         tk.Button(
             session_toolbar,
-            text="🔄 새 세션",
+            text=_("🔄 New Session"),
             command=self._start_new_tutoring_session,
             bg="#9C27B0",
             fg="white",
             font=("Arial", 8),
             padx=8,
-            pady=2
+            pady=2,
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=2)
 
         tk.Button(
             session_toolbar,
-            text="⏹️ 종료",
+            text=_("⏹️ End"),
             command=self._end_tutoring_session,
             bg="#607D8B",
             fg="white",
             font=("Arial", 8),
             padx=8,
-            pady=2
+            pady=2,
+            relief=tk.FLAT
         ).pack(side=tk.RIGHT, padx=2)
 
         # 상태 바
         self.status_bar = tk.Label(
             main_container,
-            text="준비 완료",
+            text=_("Ready"),
             anchor=tk.W,
-            bg="#f0f0f0",
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9)
         )
         self.status_bar.pack(fill=tk.X, pady=(10, 0))
 
     def _setup_bindings(self):
         """키 바인딩 설정"""
+        self.message_input.bind(self.shortcut_manager.get_shortcut("chat.send"), lambda e: self.send_message())
         self.message_input.bind("<Key>", self._on_input_change)
 
     def _on_input_change(self, event):
@@ -370,7 +393,7 @@ class EnhancedChatTab(tk.Frame):
             # 데이터베이스에 새 대화 생성
             self.current_conversation = self.chat_repository.create_conversation(
                 user_id=self.current_user_id,
-                title=f"튜터링 세션 {datetime.now().strftime('%H:%M')}",
+                title=_("Tutoring Session {timestamp}").format(timestamp=datetime.now().strftime('%H:%M')),
                 conversation_type="tutoring"
             )
 
@@ -394,38 +417,38 @@ class EnhancedChatTab(tk.Frame):
             # 세션 정보 업데이트
             self._update_session_info()
 
-            self._update_status("새 튜터링 세션이 시작되었습니다")
-            logger.info(f"새 튜터링 세션 초기화: {self.tutoring_session.session_id}")
+            self._update_status(_("New tutoring session started"))
+            logger.info(_("New tutoring session initialized: {session_id}").format(session_id=self.tutoring_session.session_id))
 
         except Exception as e:
-            logger.error(f"세션 초기화 실패: {e}")
-            messagebox.showerror("오류", f"세션 초기화에 실패했습니다: {e}")
+            logger.error(_("Session initialization failed: {error}").format(error=e))
+            messagebox.showerror(_("Error"), _("Failed to initialize session: {error}").format(error=e))
 
     def _add_welcome_message(self):
         """환영 메시지 추가"""
         mode_descriptions = {
-            TutoringMode.CONVERSATION: "자유 대화",
-            TutoringMode.CODE_REVIEW: "코드 리뷰",
-            TutoringMode.PROBLEM_SOLVING: "문제 해결",
-            TutoringMode.CONCEPT_EXPLANATION: "개념 설명",
-            TutoringMode.DEBUGGING: "디버깅 도움"
+            TutoringMode.CONVERSATION: _("Free Conversation"),
+            TutoringMode.CODE_REVIEW: _("Code Review"),
+            TutoringMode.PROBLEM_SOLVING: _("Problem Solving"),
+            TutoringMode.CONCEPT_EXPLANATION: _("Concept Explanation"),
+            TutoringMode.DEBUGGING: _("Debugging Help")
         }
 
-        welcome_text = f"""👋 안녕하세요! 저는 Python AI 튜터입니다.
+        welcome_text = f"""👋 {_("Hello! I am your Python AI Tutor.")}
 
-🎯 현재 모드: {mode_descriptions.get(self.current_mode, '자유 대화')}
-📊 수준: {self.student_level.value}
+🎯 {_("Current Mode")}: {mode_descriptions.get(self.current_mode, 'Free Conversation')}
+📊 {_("Level")}: {self.student_level.value}
 
-💡 도움을 드릴 수 있는 내용:
-• Python 개념 설명 및 예제
-• 코드 분석 및 피드백
-• 버그 찾기 및 해결 방법
-• 최적화 및 베스트 프랙티스
-• 문제 해결 단계별 안내
+💡 {_("How I can help")}:
+• {_("Explain Python concepts and provide examples")}
+• {_("Analyze code and provide feedback")}
+• {_("Find bugs and suggest solutions")}
+• {_("Discuss optimization and best practices")}
+• {_("Guide you through problem-solving steps")}
 
-📋 코드를 분석하려면 "코드 공유" 버튼을 클릭하세요.
+📋 {_("Click the 'Share Code' button to analyze your code.")}
 
-질문을 입력하거나 코드를 공유해주세요!"""
+{_("Please ask a question or share your code!")}"""
 
         self._display_message("system", welcome_text)
 
@@ -438,9 +461,9 @@ class EnhancedChatTab(tk.Frame):
 
         # 메시지 헤더
         role_names = {
-            "user": "👤 사용자",
-            "assistant": "🤖 튜터",
-            "system": "ℹ️  시스템"
+            "user": _("👤 User"),
+            "assistant": _("🤖 Tutor"),
+            "system": _("ℹ️ System")
         }
 
         # 튜터링 모드 태그
@@ -484,11 +507,11 @@ class EnhancedChatTab(tk.Frame):
             if self.tutoring_session:
                 self.tutoring_session.mode = self.current_mode
 
-            self._update_status(f"튜터링 모드 변경: {self.current_mode.value}")
-            logger.info(f"튜터링 모드 변경: {self.current_mode.value}")
+            self._update_status(_("Tutoring mode changed: {mode}").format(mode=self.current_mode.value))
+            logger.info(_("Tutoring mode changed: {mode}").format(mode=self.current_mode.value))
 
         except Exception as e:
-            logger.error(f"모드 변경 실패: {e}")
+            logger.error(_("Mode change failed: {error}").format(error=e))
 
     def _on_level_change(self, event):
         """학생 수준 변경"""
@@ -500,27 +523,27 @@ class EnhancedChatTab(tk.Frame):
             if self.tutoring_session:
                 self.tutoring_session.student_level = self.student_level
 
-            self._update_status(f"학생 수준 변경: {self.student_level.value}")
-            logger.info(f"학생 수준 변경: {self.student_level.value}")
+            self._update_status(_("Student level changed: {level}").format(level=self.student_level.value))
+            logger.info(_("Student level changed: {level}").format(level=self.student_level.value))
 
         except Exception as e:
-            logger.error(f"수준 변경 실패: {e}")
+            logger.error(_("Level change failed: {error}").format(error=e))
 
     def send_message(self):
         """메시지 전송"""
         if self.is_processing:
-            messagebox.showwarning("처리 중", "이전 메시지를 처리 중입니다. 잠시만 기다려주세요.")
+            messagebox.showwarning(_("Processing"), _("Please wait for the previous message to be processed."))
             return
 
         message_text = self.message_input.get(1.0, tk.END).strip()
 
         if not message_text:
-            messagebox.showwarning("빈 메시지", "메시지를 입력해주세요.")
+            messagebox.showwarning(_("Empty Message"), _("Please enter a message."))
             return
 
         try:
             self.is_processing = True
-            self.send_button.config(state="disabled", text="⏳ 처리 중...")
+            self.send_button.config(state="disabled", text=_("⏳ Processing..."))
 
             # 사용자 메시지 표시
             self._display_message("user", message_text)
@@ -547,10 +570,10 @@ class EnhancedChatTab(tk.Frame):
             response_thread.start()
 
         except Exception as e:
-            logger.error(f"메시지 전송 실패: {e}")
-            messagebox.showerror("오류", f"메시지 전송에 실패했습니다: {e}")
+            logger.error(_("Message send failed: {error}").format(error=e))
+            messagebox.showerror(_("Error"), _("Failed to send message: {error}").format(error=e))
             self.is_processing = False
-            self.send_button.config(state="normal", text="📤 전송")
+            self.send_button.config(state="normal", text=_("📤 Send"))
 
     def _generate_ai_response(self, user_message: str, code_context: Optional[str] = None):
         """AI 응답 생성 (백그라운드 스레드)"""
@@ -566,8 +589,8 @@ class EnhancedChatTab(tk.Frame):
             self.after(0, lambda: self._display_ai_response(response))
 
         except Exception as e:
-            logger.error(f"AI 응답 생성 실패: {e}")
-            error_message = f"죄송합니다. 응답 생성 중 오류가 발생했습니다: {str(e)}"
+            logger.error(_("AI response generation failed: {error}").format(error=e))
+            error_message = _("Sorry, an error occurred while generating the response: {error}").format(error=str(e))
             self.after(0, lambda: self._display_ai_response(error_message))
 
     def _display_ai_response(self, response: str):
@@ -587,12 +610,12 @@ class EnhancedChatTab(tk.Frame):
             self._update_session_info()
 
         except Exception as e:
-            logger.error(f"AI 응답 표시 실패: {e}")
+            logger.error(_("AI response display failed: {error}").format(error=e))
 
         finally:
             self.is_processing = False
-            self.send_button.config(state="normal", text="📤 전송")
-            self._update_status("응답 완료")
+            self.send_button.config(state="normal", text=_("📤 Send"))
+            self._update_status(_("Response complete"))
 
     def _update_session_info(self):
         """세션 정보 업데이트"""
@@ -602,18 +625,18 @@ class EnhancedChatTab(tk.Frame):
 
             summary = self.tutor.get_session_summary(self.tutoring_session.session_id)
 
-            info_text = f"""🎯 튜터링 세션 정보
+            info_text = f"""🎯 {_("Tutoring Session Info")}
 
-모드: {summary.get('mode', 'N/A')}
-수준: {summary.get('student_level', 'N/A')}
-주제: {summary.get('topic', '일반')}
+{_("Mode")}: {summary.get('mode', 'N/A')}
+{_("Level")}: {summary.get('student_level', 'N/A')}
+{_("Topic")}: {summary.get('topic', 'General')}
 
-📊 통계:
-• 메시지: {summary.get('message_count', 0)}개
-• 코드 공유: {summary.get('code_shares', 0)}개
-• 지속 시간: {int(summary.get('duration', 0) // 60)}분
+📊 {_("Statistics")}:
+• {_("Messages")}: {summary.get('message_count', 0)}
+• {_("Code Shares")}: {summary.get('code_shares', 0)}
+• {_("Duration")}: {int(summary.get('duration', 0) // 60)} {_("min")}
 
-💡 학습 목표:
+💡 {_("Learning Objectives")}:
 """
 
             learning_objectives = self.tutoring_session.learning_objectives
@@ -621,7 +644,7 @@ class EnhancedChatTab(tk.Frame):
                 for obj in learning_objectives:
                     info_text += f"  • {obj}\n"
             else:
-                info_text += "  설정되지 않음\n"
+                info_text += f"  {_('Not set')}\n"
 
             self.session_info_display.config(state="normal")
             self.session_info_display.delete(1.0, tk.END)
@@ -629,10 +652,10 @@ class EnhancedChatTab(tk.Frame):
             self.session_info_display.config(state="disabled")
 
             # 상태 바 업데이트
-            self.stats_label.config(text=f"메시지: {summary.get('message_count', 0)}")
+            self.stats_label.config(text=_("Messages: {count}").format(count=summary.get('message_count', 0)))
 
         except Exception as e:
-            logger.error(f"세션 정보 업데이트 실패: {e}")
+            logger.error(_("Session info update failed: {error}").format(error=e))
 
     def _share_code(self):
         """코드 컨텍스트 공유"""
@@ -645,11 +668,11 @@ class EnhancedChatTab(tk.Frame):
                 if self.tutoring_session:
                     self.tutoring_session.add_code_context(code)
 
-                messagebox.showinfo("코드 공유", "코드가 컨텍스트에 추가되었습니다.")
+                messagebox.showinfo(_("Share Code"), _("Code has been added to the context."))
             else:
-                messagebox.showwarning("코드 없음", "공유할 코드가 없습니다.")
+                messagebox.showwarning(_("No Code"), _("There is no code to share."))
         else:
-            messagebox.showinfo("코드 공유", "코드 공유 기능이 준비되지 않았습니다.")
+            messagebox.showinfo(_("Share Code"), _("Code sharing feature is not ready."))
 
     def _set_code_context(self, code: str):
         """코드 컨텍스트 설정"""
@@ -658,7 +681,7 @@ class EnhancedChatTab(tk.Frame):
         self.code_context_display.insert(1.0, code)
         self.code_context_display.config(state="disabled")
 
-        self._update_status(f"코드 컨텍스트 업데이트 ({len(code)} 문자)")
+        self._update_status(_("Code context updated ({length} chars)").format(length=len(code)))
 
     def _get_current_code_context(self) -> Optional[str]:
         """현재 코드 컨텍스트 반환"""
@@ -675,11 +698,11 @@ class EnhancedChatTab(tk.Frame):
             if code:
                 self.clipboard_clear()
                 self.clipboard_append(code)
-                self._update_status("코드 컨텍스트 복사됨")
+                self._update_status(_("Code context copied"))
             else:
-                messagebox.showwarning("복사 실패", "복사할 코드가 없습니다.")
+                messagebox.showwarning(_("Copy Failed"), _("There is no code to copy."))
         except Exception as e:
-            logger.error(f"코드 복사 실패: {e}")
+            logger.error(_("Code copy failed: {error}").format(error=e))
 
     def _clear_code_context(self):
         """코드 컨텍스트 삭제"""
@@ -691,11 +714,11 @@ class EnhancedChatTab(tk.Frame):
         if self.tutoring_session:
             self.tutoring_session.context = {}
 
-        self._update_status("코드 컨텍스트 삭제됨")
+        self._update_status(_("Code context cleared"))
 
     def _create_new_conversation(self):
         """새 대화 생성"""
-        if messagebox.askyesno("새 대화", "현재 대화를 저장하고 새 대화를 시작하시겠습니까?"):
+        if messagebox.askyesno(_("New Conversation"), _("Are you sure you want to save the current conversation and start a new one?")):
             self._initialize_session()
 
     def _show_conversation_history(self):
@@ -704,12 +727,12 @@ class EnhancedChatTab(tk.Frame):
             conversations = self.chat_repository.get_user_conversations(self.current_user_id)
 
             if not conversations:
-                messagebox.showinfo("대화 기록", "저장된 대화가 없습니다.")
+                messagebox.showinfo(_("Conversation History"), _("No saved conversations found."))
                 return
 
             # 간단한 대화 목록 표시
             history_window = tk.Toplevel(self)
-            history_window.title("대화 기록")
+            history_window.title(_("Conversation History"))
             history_window.geometry("600x400")
 
             # 대화 목록
@@ -731,7 +754,7 @@ class EnhancedChatTab(tk.Frame):
 
             tk.Button(
                 history_window,
-                text="불러오기",
+                text=_("Load"),
                 command=load_selected_conversation,
                 bg="#4CAF50",
                 fg="white",
@@ -739,8 +762,8 @@ class EnhancedChatTab(tk.Frame):
             ).pack(pady=10)
 
         except Exception as e:
-            logger.error(f"대화 기록 표시 실패: {e}")
-            messagebox.showerror("오류", f"대화 기록을 불러올 수 없습니다: {e}")
+            logger.error(_("Failed to show conversation history: {error}").format(error=e))
+            messagebox.showerror(_("Error"), _("Could not load conversation history: {error}").format(error=e))
 
     def _start_new_tutoring_session(self):
         """새 튜터링 세션 시작"""
@@ -752,8 +775,8 @@ class EnhancedChatTab(tk.Frame):
             if self.tutoring_session:
                 # 평가 요청
                 rating = simpledialog.askinteger(
-                    "세션 평가",
-                    "이 튜터링 세션을 평가해주세요 (1-5점):",
+                    _("Rate Session"),
+                    _("Please rate this tutoring session (1-5):"),
                     minvalue=1,
                     maxvalue=5
                 )
@@ -768,18 +791,18 @@ class EnhancedChatTab(tk.Frame):
                         rating=rating
                     )
 
-                messagebox.showinfo("세션 종료", "튜터링 세션이 종료되었습니다.")
-                self._update_status("튜터링 세션 종료됨")
+                messagebox.showinfo(_("Session Ended"), _("The tutoring session has ended."))
+                self._update_status(_("Tutoring session ended"))
 
         except Exception as e:
-            logger.error(f"튜터링 세션 종료 실패: {e}")
+            logger.error(_("Failed to end tutoring session: {error}").format(error=e))
 
     def load_conversation(self, conversation_id: int):
         """특정 대화 로드"""
         try:
             conversation = self.chat_repository.get_conversation(conversation_id)
             if not conversation:
-                messagebox.showerror("오류", "대화를 찾을 수 없습니다.")
+                messagebox.showerror(_("Error"), _("Conversation not found."))
                 return
 
             self.current_conversation = conversation
@@ -796,13 +819,13 @@ class EnhancedChatTab(tk.Frame):
                 self._display_message(msg['role'], msg['content'], timestamp)
 
             self.messages_display.config(state="disabled")
-            self._update_status(f"대화 로드됨: {conversation['title']}")
+            self._update_status(_("Conversation loaded: {title}").format(title=conversation['title']))
 
-            logger.info(f"대화 로드: {conversation_id}")
+            logger.info(_("Conversation loaded: {id}").format(id=conversation_id))
 
         except Exception as e:
-            logger.error(f"대화 로드 실패: {e}")
-            messagebox.showerror("오류", f"대화를 로드할 수 없습니다: {e}")
+            logger.error(_("Failed to load conversation: {error}").format(error=e))
+            messagebox.showerror(_("Error"), _("Could not load conversation: {error}").format(error=e))
 
     def _update_status(self, message: str):
         """상태 메시지 업데이트"""
