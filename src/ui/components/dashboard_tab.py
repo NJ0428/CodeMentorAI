@@ -13,6 +13,10 @@ import numpy as np
 from datetime import datetime, timedelta
 from loguru import logger
 
+from src.ui.language_manager import get_translator
+
+_ = get_translator()
+
 # 한글 폰트 설정 (matplotlib)
 plt.rcParams['font.family'] = 'Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] = False
@@ -21,9 +25,9 @@ plt.rcParams['axes.unicode_minus'] = False
 class DashboardTab(tk.Frame):
     """시각화 대시보드 탭 컴포넌트"""
 
-    def __init__(self, parent, learning_controller=None):
+    def __init__(self, parent, style_manager, learning_controller=None):
         super().__init__(parent)
-
+        self.style_manager = style_manager
         self.controller = learning_controller
         self.user_id = 1  # 기본 사용자 ID
 
@@ -32,11 +36,27 @@ class DashboardTab(tk.Frame):
 
         # matplotlib Figure 객체 저장
         self.figures = {}
+        
+        self._apply_theme()
 
         self._create_ui()
         self._load_dashboard_data()
 
-        logger.info("시각화 대시보드 초기화 완료")
+        logger.info(_("Dashboard initialization complete"))
+
+    def _apply_theme(self):
+        """테마 적용"""
+        colors = self.style_manager.get_current_theme_colors()
+        self.configure(bg=colors["bg"])
+
+        if self.style_manager.current_theme == "dark":
+            plt.style.use('dark_background')
+        else:
+            plt.style.use('default')
+        
+        plt.rcParams['font.family'] = 'Malgun Gothic'
+        plt.rcParams['axes.unicode_minus'] = False
+
 
     def _create_ui(self):
         """UI 생성"""
@@ -44,7 +64,7 @@ class DashboardTab(tk.Frame):
         self._create_control_panel()
 
         # 메인 대시보드 영역
-        main_frame = tk.Frame(self)
+        main_frame = tk.Frame(self, bg=self.style_manager.get_current_theme_colors()["bg"])
         main_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 대시보드 노트북
@@ -71,7 +91,8 @@ class DashboardTab(tk.Frame):
 
     def _create_control_panel(self):
         """상단 컨트롤 패널 생성"""
-        control_frame = tk.Frame(self, bg="#f0f0f0", height=80)
+        colors = self.style_manager.get_current_theme_colors()
+        control_frame = tk.Frame(self, bg=colors["bg_alt"], height=80)
         control_frame.pack(fill=tk.X, padx=5, pady=5)
 
         # 제목
@@ -79,12 +100,13 @@ class DashboardTab(tk.Frame):
             control_frame,
             text="📊 학습 분석 대시보드",
             font=("Arial", 16, "bold"),
-            bg="#f0f0f0"
+            bg=colors["bg_alt"],
+            fg=colors["fg"]
         )
         title_label.pack(pady=5)
 
         # 컨트롤 버튼 프레임
-        button_frame = tk.Frame(control_frame, bg="#f0f0f0")
+        button_frame = tk.Frame(control_frame, bg=colors["bg_alt"])
         button_frame.pack(fill=tk.X, padx=10)
 
         # 새로고침 버튼
@@ -92,9 +114,10 @@ class DashboardTab(tk.Frame):
             button_frame,
             text="🔄 새로고침",
             command=self.refresh_dashboard,
-            bg="#4CAF50",
+            bg=colors["success"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         )
         refresh_btn.pack(side=tk.LEFT, padx=5)
 
@@ -103,20 +126,22 @@ class DashboardTab(tk.Frame):
             button_frame,
             text="📥 데이터 내보내기",
             command=self.export_data,
-            bg="#2196F3",
+            bg=colors["info"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         )
         export_btn.pack(side=tk.LEFT, padx=5)
 
         # 기간 선택
-        period_frame = tk.Frame(button_frame, bg="#f0f0f0")
+        period_frame = tk.Frame(button_frame, bg=colors["bg_alt"])
         period_frame.pack(side=tk.RIGHT, padx=5)
 
         tk.Label(
             period_frame,
             text="기간:",
-            bg="#f0f0f0",
+            bg=colors["bg_alt"],
+            fg=colors["fg"],
             font=("Arial", 10)
         ).pack(side=tk.LEFT)
 
@@ -133,11 +158,12 @@ class DashboardTab(tk.Frame):
 
     def _create_overview_tab(self):
         """개요 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="📈 개요")
 
         # 주요 통계 카드
-        stats_frame = tk.Frame(tab)
+        stats_frame = tk.Frame(tab, bg=colors["bg"])
         stats_frame.pack(fill=tk.X, padx=10, pady=10)
 
         # 통계 카드들
@@ -149,7 +175,7 @@ class DashboardTab(tk.Frame):
             "study_time",
             "⏰ 총 학습 시간",
             "0시간 0분",
-            "#4CAF50"
+            colors["success"]
         )
 
         # 완료한 문제 수 카드
@@ -158,7 +184,7 @@ class DashboardTab(tk.Frame):
             "completed_exercises",
             "✅ 완료한 문제",
             "0개",
-            "#2196F3"
+            colors["info"]
         )
 
         # 평균 점수 카드
@@ -167,7 +193,7 @@ class DashboardTab(tk.Frame):
             "avg_score",
             "📊 평균 점수",
             "0.0/10",
-            "#FF9800"
+            colors["warning"]
         )
 
         # 획득 XP 카드
@@ -175,18 +201,19 @@ class DashboardTab(tk.Frame):
             stats_frame,
             "total_xp",
             "🏆 획득 XP",
-            "0 XP",
             "#9C27B0"
         )
 
         # 학습 활동 그래프
-        graph_frame = tk.Frame(tab)
+        graph_frame = tk.Frame(tab, bg=colors["bg"])
         graph_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         tk.Label(
             graph_frame,
             text="학습 활동 추이",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         # matplotlib Figure
@@ -223,21 +250,24 @@ class DashboardTab(tk.Frame):
 
     def _create_progress_charts_tab(self):
         """진도 차트 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="📊 진도 차트")
 
         # 차트 컨테이너
-        chart_container = tk.Frame(tab)
+        chart_container = tk.Frame(tab, bg=colors["bg"])
         chart_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # 완료율 파이 차트
-        pie_frame = tk.Frame(chart_container)
+        pie_frame = tk.Frame(chart_container, bg=colors["bg"])
         pie_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         tk.Label(
             pie_frame,
             text="주제 완료율",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.completion_pie_figure = Figure(figsize=(5, 4), dpi=100)
@@ -247,13 +277,15 @@ class DashboardTab(tk.Frame):
         self.figures['completion_pie'] = self.completion_pie_figure
 
         # 레벨별 진도 바 차트
-        bar_frame = tk.Frame(chart_container)
+        bar_frame = tk.Frame(chart_container, bg=colors["bg"])
         bar_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         tk.Label(
             bar_frame,
             text="레벨별 진도",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.level_progress_figure = Figure(figsize=(5, 4), dpi=100)
@@ -264,21 +296,24 @@ class DashboardTab(tk.Frame):
 
     def _create_statistics_tab(self):
         """통계 분석 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="🔍 통계 분석")
 
         # 통계 컨테이너
-        stats_container = tk.Frame(tab)
+        stats_container = tk.Frame(tab, bg=colors["bg"])
         stats_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # 점수 분포 히스토그램
-        histogram_frame = tk.Frame(stats_container)
+        histogram_frame = tk.Frame(stats_container, bg=colors["bg"])
         histogram_frame.pack(fill=tk.BOTH, expand=True)
 
         tk.Label(
             histogram_frame,
             text="점수 분포",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.score_histogram_figure = Figure(figsize=(8, 3), dpi=100)
@@ -288,40 +323,47 @@ class DashboardTab(tk.Frame):
         self.figures['score_histogram'] = self.score_histogram_figure
 
         # 성과 통계 텍스트 영역
-        text_frame = tk.Frame(stats_container)
+        text_frame = tk.Frame(stats_container, bg=colors["bg"])
         text_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
 
         tk.Label(
             text_frame,
             text="성과 통계",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.statistics_text = tk.Text(
             text_frame,
             wrap=tk.WORD,
             height=6,
-            font=("Arial", 10)
+            font=("Arial", 10),
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.statistics_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     def _create_achievements_visualization_tab(self):
         """성취 시각화 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="🏆 성취 시각화")
 
         # 성취 차기용성 컨테이너
-        achievement_container = tk.Frame(tab)
+        achievement_container = tk.Frame(tab, bg=colors["bg"])
         achievement_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # 뱃지 획득 현황
-        badge_frame = tk.Frame(achievement_container)
+        badge_frame = tk.Frame(achievement_container, bg=colors["bg"])
         badge_frame.pack(fill=tk.BOTH, expand=True)
 
         tk.Label(
             badge_frame,
             text="뱃지 획득 현황",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.badge_figure = Figure(figsize=(8, 4), dpi=100)
@@ -331,44 +373,51 @@ class DashboardTab(tk.Frame):
         self.figures['badges'] = self.badge_figure
 
         # 성취 상세 정보
-        detail_frame = tk.Frame(achievement_container)
+        detail_frame = tk.Frame(achievement_container, bg=colors["bg"])
         detail_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
 
         tk.Label(
             detail_frame,
             text="최근 성취",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.recent_achievements_text = tk.Text(
             detail_frame,
             wrap=tk.WORD,
             height=8,
-            font=("Arial", 10)
+            font=("Arial", 10),
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.recent_achievements_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     def _create_interactive_tracking_tab(self):
         """인터랙티브 추적 탭 생성"""
-        tab = tk.Frame(self.notebook)
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
         self.notebook.add(tab, text="🎯 인터랙티브 추적")
 
         # 추적 컨트롤
-        control_frame = tk.Frame(tab)
+        control_frame = tk.Frame(tab, bg=colors["bg"])
         control_frame.pack(fill=tk.X, padx=10, pady=10)
 
         tk.Label(
             control_frame,
             text="학습 목표 설정",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         # 목표 입력
-        goal_frame = tk.Frame(control_frame)
+        goal_frame = tk.Frame(control_frame, bg=colors["bg"])
         goal_frame.pack(fill=tk.X, pady=5)
 
-        tk.Label(goal_frame, text="일일 학습 시간 목표 (분):").pack(side=tk.LEFT)
-        self.daily_goal_entry = tk.Entry(goal_frame, width=10)
+        tk.Label(goal_frame, text="일일 학습 시간 목표 (분):", bg=colors["bg"], fg=colors["fg"]).pack(side=tk.LEFT)
+        self.daily_goal_entry = tk.Entry(goal_frame, width=10, bg=colors["editor_bg"], fg=colors["editor_fg"])
         self.daily_goal_entry.pack(side=tk.LEFT, padx=5)
         self.daily_goal_entry.insert(0, "30")
 
@@ -376,19 +425,22 @@ class DashboardTab(tk.Frame):
             goal_frame,
             text="목표 설정",
             command=self.set_learning_goal,
-            bg="#4CAF50",
-            fg="white"
+            bg=colors["success"],
+            fg="white",
+            relief=tk.FLAT
         )
         set_goal_btn.pack(side=tk.LEFT, padx=5)
 
         # 진도 추적 차트
-        tracking_frame = tk.Frame(tab)
+        tracking_frame = tk.Frame(tab, bg=colors["bg"])
         tracking_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         tk.Label(
             tracking_frame,
             text="학습 목표 대비 실적",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.tracking_figure = Figure(figsize=(8, 4), dpi=100)
@@ -398,32 +450,38 @@ class DashboardTab(tk.Frame):
         self.figures['tracking'] = self.tracking_figure
 
         # 학습 패턴 분석
-        pattern_frame = tk.Frame(tab)
+        pattern_frame = tk.Frame(tab, bg=colors["bg"])
         pattern_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
 
         tk.Label(
             pattern_frame,
             text="학습 패턴 분석",
-            font=("Arial", 12, "bold")
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W)
 
         self.pattern_text = tk.Text(
             pattern_frame,
             wrap=tk.WORD,
             height=5,
-            font=("Arial", 10)
+            font=("Arial", 10),
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.pattern_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     def _create_status_bar(self):
         """상태바 생성"""
-        status_bar = tk.Frame(self, bg="#f0f0f0", height=30)
+        colors = self.style_manager.get_current_theme_colors()
+        status_bar = tk.Frame(self, bg=colors["bg_alt"], height=30)
         status_bar.pack(fill=tk.X, padx=5, pady=5)
 
         self.status_label = tk.Label(
             status_bar,
             text="대시보드 준비 완료",
-            bg="#f0f0f0",
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9),
             anchor=tk.W
         )
@@ -433,7 +491,8 @@ class DashboardTab(tk.Frame):
         self.last_update_label = tk.Label(
             status_bar,
             text="마지막 업데이트: 없음",
-            bg="#f0f0f0",
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9)
         )
         self.last_update_label.pack(side=tk.RIGHT, padx=10)
