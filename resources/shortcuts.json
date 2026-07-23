@@ -1,0 +1,6 @@
+{
+    "file.open": "<Control-o>",
+    "file.save": "<Control-s>",
+    "code.run": "<F5>",
+    "chat.send": "<Control-Return>"
+}

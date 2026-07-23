@@ -9,13 +9,17 @@ import json
 import os
 from loguru import logger
 
+from src.ui.language_manager import get_translator
+
+_ = get_translator()
+
 
 class ResourcesTab(tk.Frame):
     """리소스 및 학습 자료 탭 컴포넌트"""
 
-    def __init__(self, parent, learning_controller=None):
+    def __init__(self, parent, style_manager, learning_controller=None):
         super().__init__(parent)
-
+        self.style_manager = style_manager
         self.controller = learning_controller
         self.user_id = 1  # 기본 사용자 ID
 
@@ -28,11 +32,17 @@ class ResourcesTab(tk.Frame):
         self.content_text = None
         self.code_examples_text = None
         self.search_var = None
-
+        
+        self._apply_theme()
         self._create_ui()
         self._load_resources_data()
 
-        logger.info("리소스 및 학습 자료 탭 초기화 완료")
+        logger.info(_("Resources and learning materials tab initialized"))
+
+    def _apply_theme(self):
+        """테마 적용"""
+        colors = self.style_manager.get_current_theme_colors()
+        self.configure(bg=colors["bg"])
 
     def _create_ui(self):
         """UI 생성"""
@@ -40,7 +50,7 @@ class ResourcesTab(tk.Frame):
         self._create_header_panel()
 
         # 메인 컨텐츠 영역
-        main_frame = tk.Frame(self)
+        main_frame = tk.Frame(self, bg=self.style_manager.get_current_theme_colors()["bg"])
         main_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 리소스 카테고리 노트북
@@ -58,27 +68,30 @@ class ResourcesTab(tk.Frame):
 
     def _create_header_panel(self):
         """상단 헤더 패널 생성"""
-        header_frame = tk.Frame(self, bg="#f0f0f0", height=80)
+        colors = self.style_manager.get_current_theme_colors()
+        header_frame = tk.Frame(self, bg=colors["bg_alt"], height=80)
         header_frame.pack(fill=tk.X, padx=5, pady=5)
 
         # 제목
         title_label = tk.Label(
             header_frame,
-            text="📚 리소스 및 학습 자료",
+            text=_("📚 Resources and Learning Materials"),
             font=("Arial", 16, "bold"),
-            bg="#f0f0f0"
+            bg=colors["bg_alt"],
+            fg=colors["fg"]
         )
         title_label.pack(pady=5)
 
         # 검색 및 필터 프레임
-        search_frame = tk.Frame(header_frame, bg="#f0f0f0")
+        search_frame = tk.Frame(header_frame, bg=colors["bg_alt"])
         search_frame.pack(fill=tk.X, padx=10)
 
         # 검색 입력
         tk.Label(
             search_frame,
-            text="🔍 검색:",
-            bg="#f0f0f0",
+            text=_("🔍 Search:"),
+            bg=colors["bg_alt"],
+            fg=colors["fg"],
             font=("Arial", 10)
         ).pack(side=tk.LEFT)
 
@@ -87,7 +100,9 @@ class ResourcesTab(tk.Frame):
             search_frame,
             textvariable=self.search_var,
             font=("Arial", 10),
-            width=30
+            width=30,
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         search_entry.pack(side=tk.LEFT, padx=5)
         search_entry.bind("<KeyRelease>", self._on_search)
@@ -95,42 +110,47 @@ class ResourcesTab(tk.Frame):
         # 검색 버튼
         search_btn = tk.Button(
             search_frame,
-            text="검색",
+            text=_("Search"),
             command=self.perform_search,
-            bg="#2196F3",
+            bg=colors["info"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         )
         search_btn.pack(side=tk.LEFT, padx=5)
 
         # 초기화 버튼
         reset_btn = tk.Button(
             search_frame,
-            text="초기화",
+            text=_("Reset"),
             command=self.reset_search,
-            bg="#FF9800",
+            bg=colors["warning"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         )
         reset_btn.pack(side=tk.LEFT, padx=5)
 
     def _create_code_examples_tab(self):
         """예제 코드 라이브러리 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="💻 예제 코드")
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
+        self.notebook.add(tab, text=_("💻 Code Examples"))
 
         # 레이아웃: 좌측 카테고리 트리, 우측 코드 내용
-        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL)
+        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL, bg=colors["bg"], sashrelief=tk.RAISED)
         paned_window.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 좌측: 카테고리 및 예제 리스트
-        left_frame = tk.Frame(paned_window)
+        left_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(left_frame, minsize=250)
 
         tk.Label(
             left_frame,
-            text="카테고리",
-            font=("Arial", 11, "bold")
+            text=_("Categories"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 예제 카테고리 트리뷰
@@ -146,13 +166,15 @@ class ResourcesTab(tk.Frame):
         self.code_tree.bind("<<TreeviewSelect>>", self._on_code_example_selected)
 
         # 우측: 코드 내용 표시
-        right_frame = tk.Frame(paned_window)
+        right_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(right_frame, minsize=400)
 
         tk.Label(
             right_frame,
-            text="예제 코드",
-            font=("Arial", 11, "bold")
+            text=_("Example Code"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 코드 표시 영역
@@ -160,60 +182,66 @@ class ResourcesTab(tk.Frame):
             right_frame,
             wrap=tk.NONE,
             font=("Consolas", 10),
-            bg="#f5f5f5"
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.code_examples_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 코드 실행 버튼
-        code_btn_frame = tk.Frame(right_frame)
+        code_btn_frame = tk.Frame(right_frame, bg=colors["bg"])
         code_btn_frame.pack(fill=tk.X, pady=5)
 
         tk.Button(
             code_btn_frame,
-            text="▶ 실행",
+            text=_("▶ Run"),
             command=self.run_example_code,
-            bg="#4CAF50",
+            bg=colors["success"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
         tk.Button(
             code_btn_frame,
-            text="📋 복사",
+            text=_("📋 Copy"),
             command=self.copy_example_code,
-            bg="#2196F3",
+            bg=colors["info"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
     def _create_learning_guides_tab(self):
         """학습 가이드 및 튜토리얼 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="📖 학습 가이드")
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
+        self.notebook.add(tab, text=_("📖 Learning Guides"))
 
         # 레이아웃: 좌측 가이드 리스트, 우측 내용
-        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL)
+        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL, bg=colors["bg"], sashrelief=tk.RAISED)
         paned_window.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 좌측: 가이드 리스트
-        left_frame = tk.Frame(paned_window)
+        left_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(left_frame, minsize=250)
 
         tk.Label(
             left_frame,
-            text="학습 가이드",
-            font=("Arial", 11, "bold")
+            text=_("Learning Guides"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 가이드 리스트박스
-        guide_list_frame = tk.Frame(left_frame)
+        guide_list_frame = tk.Frame(left_frame, bg=colors["bg"])
         guide_list_frame.pack(fill=tk.BOTH, expand=True)
 
         # 난이도 필터
-        filter_frame = tk.Frame(guide_list_frame)
+        filter_frame = tk.Frame(guide_list_frame, bg=colors["bg"])
         filter_frame.pack(fill=tk.X, pady=(0, 5))
 
-        tk.Label(filter_frame, text="난이도:").pack(side=tk.LEFT)
+        tk.Label(filter_frame, text=_("Difficulty:"), bg=colors["bg"], fg=colors["fg"]).pack(side=tk.LEFT)
 
         self.guide_level_var = tk.StringVar(value="all")
         level_combo = ttk.Combobox(
@@ -230,7 +258,11 @@ class ResourcesTab(tk.Frame):
         self.guides_listbox = tk.Listbox(
             guide_list_frame,
             font=("Arial", 10),
-            selectmode=tk.SINGLE
+            selectmode=tk.SINGLE,
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"],
+            selectbackground=colors["primary"],
+            selectforeground=colors["editor_bg"]
         )
         self.guides_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -243,13 +275,15 @@ class ResourcesTab(tk.Frame):
         self.guides_listbox.bind("<<ListboxSelect>>", self._on_guide_selected)
 
         # 우측: 가이드 내용
-        right_frame = tk.Frame(paned_window)
+        right_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(right_frame, minsize=400)
 
         tk.Label(
             right_frame,
-            text="가이드 내용",
-            font=("Arial", 11, "bold")
+            text=_("Guide Content"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 가이드 내용 표시
@@ -257,54 +291,59 @@ class ResourcesTab(tk.Frame):
             right_frame,
             wrap=tk.WORD,
             font=("Arial", 10),
-            bg="#ffffff"
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.guide_content_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 진도 추적 버튼
-        guide_btn_frame = tk.Frame(right_frame)
+        guide_btn_frame = tk.Frame(right_frame, bg=colors["bg"])
         guide_btn_frame.pack(fill=tk.X, pady=5)
 
         self.guide_progress_btn = tk.Button(
             guide_btn_frame,
-            text="✅ 학습 완료 표시",
+            text=_("✅ Mark as Complete"),
             command=self.mark_guide_complete,
-            bg="#4CAF50",
+            bg=colors["success"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         )
         self.guide_progress_btn.pack(side=tk.LEFT, padx=5)
 
     def _create_troubleshooting_tab(self):
         """문제 해결 예시 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="🔧 문제 해결")
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
+        self.notebook.add(tab, text=_("🔧 Troubleshooting"))
 
         # 레이아웃: 좌측 문제 리스트, 우측 해결책
-        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL)
+        paned_window = tk.PanedWindow(tab, orient=tk.HORIZONTAL, bg=colors["bg"], sashrelief=tk.RAISED)
         paned_window.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 좌측: 문제 카테고리 및 리스트
-        left_frame = tk.Frame(paned_window)
+        left_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(left_frame, minsize=250)
 
         tk.Label(
             left_frame,
-            text="문제 유형",
-            font=("Arial", 11, "bold")
+            text=_("Problem Type"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 문제 카테고리
-        problem_category_frame = tk.Frame(left_frame)
+        problem_category_frame = tk.Frame(left_frame, bg=colors["bg"])
         problem_category_frame.pack(fill=tk.X, pady=(0, 5))
 
         self.problem_category_var = tk.StringVar(value="syntax")
         categories = [
-            ("syntax", "문법 오류"),
-            ("runtime", "실행 시간 오류"),
-            ("logical", "논리 오류"),
-            ("performance", "성능 문제"),
-            ("debugging", "디버깅")
+            ("syntax", _("Syntax Error")),
+            ("runtime", _("Runtime Error")),
+            ("logical", _("Logical Error")),
+            ("performance", _("Performance Issue")),
+            ("debugging", _("Debugging"))
         ]
 
         for value, text in categories:
@@ -314,22 +353,31 @@ class ResourcesTab(tk.Frame):
                 variable=self.problem_category_var,
                 value=value,
                 command=self._on_problem_category_changed,
-                font=("Arial", 9)
+                font=("Arial", 9),
+                bg=colors["bg"],
+                fg=colors["fg"],
+                selectcolor=colors["bg_alt"]
             )
             rb.pack(anchor=tk.W)
 
         # 문제 리스트
         tk.Label(
             left_frame,
-            text="흔한 문제들:",
-            font=("Arial", 10, "bold")
+            text=_("Common Problems:"),
+            font=("Arial", 10, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(10, 0))
 
         self.problems_listbox = tk.Listbox(
             left_frame,
             font=("Arial", 9),
             selectmode=tk.SINGLE,
-            height=15
+            height=15,
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"],
+            selectbackground=colors["primary"],
+            selectforeground=colors["editor_bg"]
         )
         self.problems_listbox.pack(fill=tk.BOTH, expand=True, pady=5)
 
@@ -337,13 +385,15 @@ class ResourcesTab(tk.Frame):
         self.problems_listbox.bind("<<ListboxSelect>>", self._on_problem_selected)
 
         # 우측: 해결책 내용
-        right_frame = tk.Frame(paned_window)
+        right_frame = tk.Frame(paned_window, bg=colors["bg"])
         paned_window.add(right_frame, minsize=400)
 
         tk.Label(
             right_frame,
-            text="해결 방법",
-            font=("Arial", 11, "bold")
+            text=_("Solution"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         # 해결책 표시
@@ -351,87 +401,93 @@ class ResourcesTab(tk.Frame):
             right_frame,
             wrap=tk.WORD,
             font=("Arial", 10),
-            bg="#ffffff"
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"]
         )
         self.solution_content_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 유용한 도구 버튼
-        solution_btn_frame = tk.Frame(right_frame)
+        solution_btn_frame = tk.Frame(right_frame, bg=colors["bg"])
         solution_btn_frame.pack(fill=tk.X, pady=5)
 
         tk.Button(
             solution_btn_frame,
-            text="💡 관련 예제 보기",
+            text=_("💡 Show Related Example"),
             command=self.show_related_example,
-            bg="#2196F3",
+            bg=colors["info"],
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
         tk.Button(
             solution_btn_frame,
-            text="🔍 더 알아보기",
+            text=_("🔍 Learn More"),
             command=self.learn_more_about_problem,
             bg="#9C27B0",
             fg="white",
-            font=("Arial", 10)
+            font=("Arial", 10),
+            relief=tk.FLAT
         ).pack(side=tk.LEFT, padx=5)
 
     def _create_best_practices_tab(self):
         """베스트 프랙티스 가이드 탭 생성"""
-        tab = tk.Frame(self.notebook)
-        self.notebook.add(tab, text="⭐ 베스트 프랙티스")
+        colors = self.style_manager.get_current_theme_colors()
+        tab = tk.Frame(self.notebook, bg=colors["bg"])
+        self.notebook.add(tab, text=_("⭐ Best Practices"))
 
         # 메인 컨텐츠 영역
-        content_frame = tk.Frame(tab)
+        content_frame = tk.Frame(tab, bg=colors["bg"])
         content_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # 주제 영역
-        topics_frame = tk.Frame(content_frame)
+        topics_frame = tk.Frame(content_frame, bg=colors["bg"])
         topics_frame.pack(fill=tk.BOTH, expand=True)
 
         tk.Label(
             topics_frame,
-            text="코딩 베스트 프랙티스 주제",
-            font=("Arial", 12, "bold")
+            text=_("Coding Best Practices Topics"),
+            font=("Arial", 12, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 10))
 
         # 주제 카드들
         practices_topics = [
             {
                 "id": "code_style",
-                "title": "📝 코드 스타일",
-                "description": "PEP 8 가이드, 명명 규칙, 코드 포맷팅",
+                "title": _("📝 Code Style"),
+                "description": _("PEP 8 guidelines, naming conventions, code formatting"),
                 "icon": "📝"
             },
             {
                 "id": "error_handling",
-                "title": "⚠️ 에러 처리",
-                "description": "예외 처리, 에러 메시지, 디버깅",
+                "title": _("⚠️ Error Handling"),
+                "description": _("Exception handling, error messages, debugging"),
                 "icon": "⚠️"
             },
             {
                 "id": "performance",
-                "title": "🚀 성능 최적화",
-                "description": "알고리즘, 메모리 관리, 효율성",
+                "title": _("🚀 Performance Optimization"),
+                "description": _("Algorithms, memory management, efficiency"),
                 "icon": "🚀"
             },
             {
                 "id": "security",
-                "title": "🔒 보안",
-                "description": "입력 검증, 데이터 보호, 안전한 코딩",
+                "title": _("🔒 Security"),
+                "description": _("Input validation, data protection, secure coding"),
                 "icon": "🔒"
             },
             {
                 "id": "testing",
-                "title": "🧪 테스트",
-                "description": "단위 테스트, 테스트 주도 개발",
+                "title": _("🧪 Testing"),
+                "description": _("Unit testing, test-driven development"),
                 "icon": "🧪"
             },
             {
                 "id": "documentation",
-                "title": "📚 문서화",
-                "description": "주석, 문서 문자열, README 작성",
+                "title": _("📚 Documentation"),
+                "description": _("Comments, docstrings, README writing"),
                 "icon": "📚"
             }
         ]
@@ -441,72 +497,80 @@ class ResourcesTab(tk.Frame):
         for topic in practices_topics:
             card = tk.Frame(
                 topics_frame,
-                bg="#e3f2fd",
+                bg=colors["bg_alt"],
                 relief=tk.RAISED,
                 borderwidth=2
             )
             card.pack(fill=tk.X, pady=5)
 
             # 카드 내용
-            content = tk.Frame(card, bg="#e3f2fd")
+            content = tk.Frame(card, bg=colors["bg_alt"])
             content.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
             tk.Label(
                 content,
                 text=topic["title"],
                 font=("Arial", 11, "bold"),
-                bg="#e3f2fd"
+                bg=colors["bg_alt"],
+                fg=colors["fg"]
             ).pack(anchor=tk.W)
 
             tk.Label(
                 content,
                 text=topic["description"],
                 font=("Arial", 9),
-                bg="#e3f2fd",
+                bg=colors["bg_alt"],
+                fg=colors["fg"],
                 wraplength=500
             ).pack(anchor=tk.W, pady=(5, 0))
 
             # 보기 버튼
             btn = tk.Button(
                 card,
-                text="📖 보기",
+                text=_("📖 View"),
                 command=lambda t=topic["id"]: self.show_practice_detail(t),
-                bg="#2196F3",
+                bg=colors["info"],
                 fg="white",
-                font=("Arial", 9)
+                font=("Arial", 9),
+                relief=tk.FLAT
             )
             btn.pack(side=tk.RIGHT, padx=10, pady=5)
 
             self.practice_buttons[topic["id"]] = btn
 
         # 하단: 베스트 프랙티스 요약
-        summary_frame = tk.Frame(content_frame)
+        summary_frame = tk.Frame(content_frame, bg=colors["bg"])
         summary_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
 
         tk.Label(
             summary_frame,
-            text="📋 베스트 프랙티스 요약",
-            font=("Arial", 11, "bold")
+            text=_("📋 Best Practices Summary"),
+            font=("Arial", 11, "bold"),
+            bg=colors["bg"],
+            fg=colors["fg"]
         ).pack(anchor=tk.W, pady=(0, 5))
 
         self.practices_summary_text = scrolledtext.ScrolledText(
             summary_frame,
             wrap=tk.WORD,
             font=("Arial", 9),
-            bg="#f9f9f9",
+            bg=colors["editor_bg"],
+            fg=colors["editor_fg"],
             height=8
         )
         self.practices_summary_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     def _create_status_bar(self):
         """상태바 생성"""
-        status_bar = tk.Frame(self, bg="#f0f0f0", height=30)
+        colors = self.style_manager.get_current_theme_colors()
+        status_bar = tk.Frame(self, bg=colors["bg_alt"], height=30)
         status_bar.pack(fill=tk.X, padx=5, pady=5)
 
         self.status_label = tk.Label(
             status_bar,
-            text="리소스 로드 완료",
-            bg="#f0f0f0",
+            text=_("Resources loaded"),
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9),
             anchor=tk.W
         )
@@ -515,8 +579,9 @@ class ResourcesTab(tk.Frame):
         # 리소스 카운트
         self.resource_count_label = tk.Label(
             status_bar,
-            text="총 0개의 리소스",
-            bg="#f0f0f0",
+            text=_("Total resources: 0"),
+            bg=colors["bg_alt"],
+            fg=colors["fg_alt"],
             font=("Arial", 9)
         )
         self.resource_count_label.pack(side=tk.RIGHT, padx=10)
